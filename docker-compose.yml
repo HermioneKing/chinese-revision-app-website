@@ -34,7 +34,7 @@ services:
   db:
     image: postgres:16-alpine # Use a recent stable PostgreSQL image
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: user
