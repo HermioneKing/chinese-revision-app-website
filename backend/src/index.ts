@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
@@ -16,6 +17,7 @@ const prisma = new PrismaClient({
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(cors()); // Use cors middleware
 
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
