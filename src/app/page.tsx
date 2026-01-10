@@ -26,7 +26,7 @@ export default function Home() {
   const recordsPerPage = 5;
 
   useEffect(() => {
-    fetch('/api/question_records')
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/question_records`)
       .then((res) => res.json())
       .then((data) => setQuestionRecords(data));
   }, []);
