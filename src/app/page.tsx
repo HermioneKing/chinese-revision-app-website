@@ -1,8 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const BarChart = dynamic(
+  () => import('recharts').then((mod) => mod.BarChart),
+  { ssr: false }
+);
 import {
-  BarChart,
   Bar,
   XAxis,
   YAxis,
