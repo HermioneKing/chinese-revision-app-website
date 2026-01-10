@@ -1,14 +1,14 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg'; // Corrected import
+import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
-const app = express(); // Defined app before use
+const app = express();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-const adapter = new PrismaPg(pool) as any; // Using PrismaPg as adapter
+const adapter = new PrismaPg(pool) as any;
 const prisma = new PrismaClient({
   adapter,
   log: ['query', 'info', 'warn', 'error'],
@@ -21,57 +21,17 @@ app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
 
-// User routes
-app.get('/api/users', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
+// Student routes
+app.get('/api/students', async (req, res) => {
+  const students = await prisma.student.findMany();
+  res.json(students);
 });
 
-app.get('/api/users/:id', async (req, res) => {
-  const { id } = req.params;
-  const user = await prisma.user.findUnique({
-    where: { id: Number(id) },
-  });
-  res.json(user);
+// QuestionRecord routes
+app.get('/api/question_records', async (req, res) => {
+  const questionRecords = await prisma.questionRecord.findMany();
+  res.json(questionRecords);
 });
-
-app.post('/api/users', async (req, res) => {
-  const { email, name } = req.body;
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name,
-    },
-  });
-  res.json(user);
-});
-
-// Post routes
-app.get('/api/posts', async (req, res) => {
-  const posts = await prisma.post.findMany();
-  res.json(posts);
-});
-
-app.get('/api/posts/:id', async (req, res) => {
-  const { id } = req.params;
-  const post = await prisma.post.findUnique({
-    where: { id: Number(id) },
-  });
-  res.json(post);
-});
-
-app.post('/api/posts', async (req, res) => {
-  const { title, content, authorId } = req.body;
-  const post = await prisma.post.create({
-    data: {
-      title,
-      content,
-      authorId,
-    },
-  });
-  res.json(post);
-});
-
 
 const startServer = async () => {
   try {

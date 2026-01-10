@@ -1,165 +1,125 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
-interface User {
-  id: number;
-  email: string;
-  name: string | null;
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string | null;
-  authorId: number;
+interface QuestionRecord {
+  record_id: number;
+  questions_id: number;
+  student_id: number;
+  answer: string;
+  is_correct: boolean;
+  tested_date: string;
 }
 
 export default function Home() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [newUserName, setNewUserName] = useState('');
-  const [newUserEmail, setNewUserEmail] = useState('');
-  const [newPostTitle, setNewPostTitle] = useState('');
-  const [newPostContent, setNewPostContent] = useState('');
-  const [newPostAuthor, setNewPostAuthor] = useState('');
+  const [questionRecords, setQuestionRecords] = useState<QuestionRecord[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`)
+    fetch('/api/question_records')
       .then((res) => res.json())
-      .then((data) => setUsers(data));
-
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/posts`)
-      .then((res) => res.json())
-      .then((data) => setPosts(data));
+      .then((data) => setQuestionRecords(data));
   }, []);
 
-  const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newUserName, email: newUserEmail }),
-    });
-    const newUser = await res.json();
-    setUsers([...users, newUser]);
-    setNewUserName('');
-    setNewUserEmail('');
-  };
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = questionRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
 
-  const handleCreatePost = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/posts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: newPostTitle,
-        content: newPostContent,
-        authorId: Number(newPostAuthor),
-      }),
-    });
-    const newPost = await res.json();
-    setPosts([...posts, newPost]);
-    setNewPostTitle('');
-    setNewPostContent('');
-    setNewPostAuthor('');
-  };
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const chartData = [
+    {
+      name: 'Correct vs. Incorrect',
+      correct: questionRecords.filter((r) => r.is_correct).length,
+      incorrect: questionRecords.filter((r) => !r.is_correct).length,
+    },
+  ];
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center gap-8 py-16 px-8 bg-white dark:bg-black sm:items-start">
+      <main className="flex min-h-screen w-full max-w-4xl flex-col items-center gap-8 py-16 px-8 bg-white dark:bg-black sm:items-start">
         <h1 className="text-3xl font-semibold text-black dark:text-zinc-50">
-          Users and Posts
+          Question Records
         </h1>
 
         <div className="w-full">
           <h2 className="text-2xl font-semibold text-black dark:text-zinc-50">
-            Users
+            Records Table
           </h2>
-          <ul className="mt-4 space-y-2">
-            {users.map((user) => (
-              <li key={user.id} className="text-zinc-600 dark:text-zinc-400">
-                {user.name} ({user.email})
-              </li>
-            ))}
-          </ul>
+          <table className="mt-4 w-full text-left">
+            <thead>
+              <tr>
+                <th className="py-2">Record ID</th>
+                <th className="py-2">Question ID</th>
+                <th className="py-2">Student ID</th>
+                <th className="py-2">Correct</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecords.map((record) => (
+                <tr key={record.record_id}>
+                  <td className="py-2">{record.record_id}</td>
+                  <td className="py-2">{record.questions_id}</td>
+                  <td className="py-2">{record.student_id}</td>
+                  <td className="py-2">{record.is_correct ? 'Yes' : 'No'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-          <form onSubmit={handleCreateUser} className="mt-4 space-y-4">
-            <h3 className="text-xl font-semibold text-black dark:text-zinc-50">
-              Create User
-            </h3>
-            <input
-              type="text"
-              placeholder="Name"
-              value={newUserName}
-              onChange={(e) => setNewUserName(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={newUserEmail}
-              onChange={(e) => setNewUserEmail(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
-            />
-            <button
-              type="submit"
-              className="rounded-md bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-50 dark:text-black"
-            >
-              Create
-            </button>
-          </form>
+          <div className="mt-4 flex justify-center">
+            {Array.from({ length: Math.ceil(questionRecords.length / recordsPerPage) }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className={`mx-1 px-3 py-1 ${
+                  currentPage === i + 1 ? 'bg-zinc-900 text-white' : 'bg-zinc-200'
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="w-full">
           <h2 className="text-2xl font-semibold text-black dark:text-zinc-50">
-            Posts
+            Correct vs. Incorrect Answers
           </h2>
-          <ul className="mt-4 space-y-2">
-            {posts.map((post) => (
-              <li key={post.id} className="text-zinc-600 dark:text-zinc-400">
-                <h4 className="font-semibold">{post.title}</h4>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
-
-          <form onSubmit={handleCreatePost} className="mt-4 space-y-4">
-            <h3 className="text-xl font-semibold text-black dark:text-zinc-50">
-              Create Post
-            </h3>
-            <input
-              type="text"
-              placeholder="Title"
-              value={newPostTitle}
-              onChange={(e) => setNewPostTitle(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
-            />
-            <textarea
-              placeholder="Content"
-              value={newPostContent}
-              onChange={(e) => setNewPostContent(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
-            />
-            <select
-              value={newPostAuthor}
-              onChange={(e) => setNewPostAuthor(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-zinc-950 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          <div className="mt-4">
+            <BarChart
+              width={500}
+              height={300}
+              data={chartData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
             >
-              <option value="">Select Author</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="rounded-md bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-50 dark:text-black"
-            >
-              Create
-            </button>
-          </form>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="correct" fill="#82ca9d" />
+              <Bar dataKey="incorrect" fill="#8884d8" />
+            </BarChart>
+          </div>
         </div>
       </main>
     </div>
