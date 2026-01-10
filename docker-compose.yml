@@ -1,0 +1,46 @@
+
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules # Exclude node_modules from host mount
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_BASE_URL=http://backend:5000/api # Connect to backend service
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app # Mount the entire project for backend development, will need to be careful with subdirectories
+      - /app/backend/node_modules # Exclude backend node_modules from host mount
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://user:password@db:5432/mydb # Connect to the db service
+      - JWT_SECRET=${JWT_SECRET}
+    env_file: .env
+    depends_on:
+      - db # Ensure db service starts before backend
+
+  db:
+    image: postgres:16-alpine # Use a recent stable PostgreSQL image
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persistent data volume
+
+volumes:
+  db_data: # Define the named volume for database persistence

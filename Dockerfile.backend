@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+WORKDIR /app/backend
+
+COPY backend/package.json backend/package-lock.json ./
+RUN npm install
+
+COPY backend/src ./src
+COPY backend/prisma ./prisma
+COPY backend/tsconfig.json ./
+
+RUN npx prisma generate
+RUN npm run build
+
+EXPOSE 5001
+
+ENV NODE_ENV production
+
+CMD ["tail", "-f", "/dev/null"]
