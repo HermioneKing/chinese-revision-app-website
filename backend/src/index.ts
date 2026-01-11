@@ -31,8 +31,14 @@ app.get('/api/students', async (req, res) => {
 
 // QuestionRecord routes
 app.get('/api/question_records', async (req, res) => {
-  const questionRecords = await prisma.questionRecord.findMany();
-  res.json(questionRecords);
+  try {
+    const questionRecords = await prisma.questionRecord.findMany();
+    console.log('Fetched question records:', questionRecords); // Debug log
+    res.json(questionRecords);
+  } catch (error) {
+    console.error('Error fetching question records:', error); // Debug log
+    res.status(500).json({ error: 'Failed to fetch question records' });
+  }
 });
 
 const startServer = async () => {
