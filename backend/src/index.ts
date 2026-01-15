@@ -29,16 +29,29 @@ app.get('/api/students', async (req, res) => {
   res.json(students);
 });
 
+// Class routes
+app.get('/api/classes', async (req, res) => {
+  const classes = await prisma.group.findMany({
+    include: {
+      StudentGroupMapping: {
+        include: {
+          student: {
+            include: {
+              student_subscription: true,
+              student_activity_stats: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  res.json(classes);
+});
+
 // QuestionRecord routes
 app.get('/api/question_records', async (req, res) => {
-  try {
-    const questionRecords = await prisma.questionRecord.findMany();
-    console.log('Fetched question records:', questionRecords); // Debug log
-    res.json(questionRecords);
-  } catch (error) {
-    console.error('Error fetching question records:', error); // Debug log
-    res.status(500).json({ error: 'Failed to fetch question records' });
-  }
+  const questionRecords = await prisma.questionRecord.findMany();
+  res.json(questionRecords);
 });
 
 const startServer = async () => {

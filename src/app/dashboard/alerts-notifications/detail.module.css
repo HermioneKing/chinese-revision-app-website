@@ -1,0 +1,14 @@
+.container {
+    padding: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+    text-transform: capitalize;
+}
+
+.message {
+    font-size: 12px;
+}

@@ -1,0 +1,52 @@
+.title {
+    margin-bottom: 20px;
+    font-size: 14px; /* 1.4rem is 14px as body font is 10px */
+    color: #333;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: transparent;
+    max-width: 400px; /* Fixed maximum width for boxes */
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 12px;
+    color: #333;
+}
+
+.card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.card li {
+    margin-bottom: 10px;
+    color: #555; /* Grey color for list items */
+}
+
+.button {
+    background-color: #777; /* Grey button */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.button:hover {
+    background-color: #555; /* Darker grey on hover */
+}
+
+

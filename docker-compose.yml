@@ -12,8 +12,10 @@ services:
       - /app/node_modules # Exclude node_modules from host mount
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:5001/api # This is the change
+      - NEXT_PUBLIC_API_BASE_URL=http://backend:5001/api # Corrected for inter-container communication
     env_file: .env
+    depends_on:
+      - backend
 
   backend:
     build:
@@ -21,8 +23,8 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "5001:5001"
+    # REMOVE THIS: - .:/app # Remove volume mount to prevent overwriting built files
     volumes:
-      - .:/app # Mount the entire project for backend development, will need to be careful with subdirectories
       - /app/backend/node_modules # Exclude backend node_modules from host mount
     environment:
       - NODE_ENV=development

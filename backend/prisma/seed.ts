@@ -12,6 +12,37 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
+  // Clear the database
+  await prisma.studentGroupMapping.deleteMany();
+  await prisma.questionRecord.deleteMany();
+  await prisma.questionInfo.deleteMany();
+  await prisma.student.deleteMany();
+  await prisma.plan.deleteMany();
+  await prisma.group.deleteMany();
+  await prisma.school.deleteMany();
+
+  // Create a school
+  const school = await prisma.school.create({
+    data: {
+      school: 'Demo School',
+    },
+  });
+
+  // Create 2 groups
+  const group1 = await prisma.group.create({
+    data: {
+      group_name: 'Class A',
+      school_id: school.school_id,
+    },
+  });
+
+  const group2 = await prisma.group.create({
+    data: {
+      group_name: 'Class B',
+      school_id: school.school_id,
+    },
+  });
+
   // Create 10 plans
   for (let i = 1; i <= 10; i++) {
     await prisma.plan.create({
@@ -31,6 +62,19 @@ async function main() {
         username: `student${i}`,
         nickname: `Student ${i}`,
         plan_id: randomPlan.plan_id,
+      },
+    });
+  }
+
+  // Assign students to groups
+  const allStudents = await prisma.student.findMany();
+  for (let i = 0; i < allStudents.length; i++) {
+    const student = allStudents[i];
+    const group = i < 5 ? group1 : group2; // Assign first 5 to group1, rest to group2
+    await prisma.studentGroupMapping.create({
+      data: {
+        student_id: student.student_id,
+        group_id: group.group_id,
       },
     });
   }

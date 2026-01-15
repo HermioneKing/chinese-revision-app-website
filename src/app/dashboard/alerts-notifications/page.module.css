@@ -1,0 +1,37 @@
+.container {
+    padding: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+.notificationList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notificationItem {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.notificationItem.read {
+    background-color: #f4f4f4;
+    color: #888;
+}
+
+.notificationType {
+    font-weight: bold;
+    text-transform: capitalize;
+}

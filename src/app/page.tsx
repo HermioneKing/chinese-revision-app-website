@@ -31,7 +31,7 @@ export default function Home() {
   const recordsPerPage = 5;
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/question_records')
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/question_records`)
       .then((res) => res.json())
       .then((data) => setQuestionRecords(data))
       .catch((error) => console.error('Failed to fetch question records:', error));
