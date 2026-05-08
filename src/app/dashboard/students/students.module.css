@@ -1,0 +1,372 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* ── Search bar ──────────────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchInput {
+  flex: 1;
+  max-width: 320px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--p1);
+}
+
+.totalLabel {
+  font-size: 13px;
+  color: #888;
+  margin-left: auto;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+
+.tableWrap {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  border-bottom: 1px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortableHeader:hover {
+  color: #555;
+}
+
+.activeHeader {
+  color: var(--p1);
+}
+
+.sortIcon {
+  margin-left: 4px;
+  opacity: 0.4;
+  font-size: 10px;
+}
+
+.sortActive {
+  opacity: 1;
+  color: var(--p1);
+}
+
+.table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f7f7f7;
+  color: #444;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.table tbody tr:hover td {
+  background: #f5fbf5;
+}
+
+.usernameCell {
+  font-weight: 600;
+  color: #333;
+}
+
+.nicknameCell {
+  color: #666;
+}
+
+.planBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.planFree {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.planPremium {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.pageBtn {
+  padding: 5px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  color: #444;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--p1);
+  color: #fff;
+  border-color: var(--p1);
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pageInfo {
+  color: #888;
+}
+
+/* ── States ──────────────────────────────────────────────────────────────── */
+
+.loading {
+  font-size: 13px;
+  color: #aaa;
+  padding: 40px;
+  text-align: center;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--p4);
+  padding: 40px;
+  text-align: center;
+}
+
+/* ── Detail page ─────────────────────────────────────────────────────────── */
+
+.backBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--p1);
+  padding: 0;
+  margin-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.backBtn:hover {
+  text-decoration: underline;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--p1);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.detailInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.detailMeta {
+  font-size: 13px;
+  color: #888;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.statCard {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--card-accent, var(--p1));
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.2;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panelTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.historyTable th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  border-bottom: 1px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.historyTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f7f7f7;
+  color: #444;
+}
+
+.historyTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.wrongBad  { color: var(--p4); font-weight: 600; }
+.wrongGood { color: var(--p2); font-weight: 600; }
+
+/* ── Chart filter controls ───────────────────────────────────────────────── */
+
+.chartPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.chartFilters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chartFilterGroup {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.chartFilterBtn {
+  padding: 4px 10px;
+  background: #fff;
+  border: none;
+  border-right: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 12px;
+  color: #555;
+}
+
+.chartFilterBtn:last-child { border-right: none; }
+.chartFilterBtn:hover { background: #f5f5f5; }
+
+.chartFilterBtnActive {
+  background: var(--p1);
+  color: #fff;
+}

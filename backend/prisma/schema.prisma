@@ -9,344 +9,258 @@ datasource db {
   provider = "postgresql"
 }
 
-// System / Marketing Info
-model AdvertisementClick {
-  click_id         Int       @id @default(autoincrement())
-  advertisement_id Int?
-  student_id       Int?
-  clicked_at       DateTime?
-  page             String?   @db.VarChar(255)
-  user_agent       String?   @db.Text
-  ip_address       String?   @db.VarChar(45)
-}
-
 // Student Management Tables
 model Plan {
-  plan_id               Int      @id @default(autoincrement())
-  plan_name             String?  @db.VarChar(255)
-  freeorpremiumorschool String?  @db.VarChar(50)
-  function_1            String?  @db.Text
-  function_2            String?  @db.Text
-  students              Student[]
-  StudentSubscription   StudentSubscription[]
-  Transaction           Transaction[]
+  plan_id   Int      @id @default(autoincrement())
+  plan_name String   @db.Text
+  function_1 Boolean @default(false)
+  function_2 Boolean @default(false)
+  students  Student[]
+
+  @@map("plan")
 }
 
 model Student {
-  student_id              Int                     @id @default(autoincrement())
-  username                String?                 @unique @db.VarChar(255)
-  nickname                String?                 @db.VarChar(255)
-  login_auth              String?                 @db.VarChar(50)
-  register_date           DateTime?
-  last_active             DateTime?
-  plan_id                 Int?
-  plan                    Plan?                   @relation(fields: [plan_id], references: [plan_id])
-  student_subscription    StudentSubscription?
-  transactions            Transaction[]
+  student_id    Int     @id @default(autoincrement())
+  username      String  @unique @db.Text
+  nickname      String? @db.Text
+  login_auth    String? @db.Text
+  register_date DateTime @default(now()) @db.Date
+  plan_id       Int?
+  plan          Plan?   @relation(fields: [plan_id], references: [plan_id])
   student_login_google    StudentLoginGoogle?
   student_login_apple     StudentLoginApple?
   student_login_email     StudentLoginEmail?
-  student_activity_stats  StudentActivityStats?
-  school_student          SchoolStudent?
-  StudentGroupMapping     StudentGroupMapping[]
   QuestionRecord          QuestionRecord[]
   Complete                Complete[]
   ChallengeModeRecord     ChallengeModeRecord?
-}
 
-model StudentSubscription {
-  student_id Int     @id
-  plan_id    Int?
-  start_date DateTime? @db.Date
-  end_date   DateTime? @db.Date
-  student    Student @relation(fields: [student_id], references: [student_id])
-  plan       Plan?   @relation(fields: [plan_id], references: [plan_id])
-}
-
-model Transaction {
-  transaction_id Int       @id @default(autoincrement())
-  student_id     Int?
-  plan_id        Int?
-  date           DateTime?
-  price          Decimal?  @db.Decimal(10, 2)
-  student        Student?  @relation(fields: [student_id], references: [student_id])
-  plan           Plan?     @relation(fields: [plan_id], references: [plan_id])
+  @@map("students")
 }
 
 model StudentLoginGoogle {
   student_id Int     @id
-  google_id  String? @unique @db.VarChar(255)
-  email      String? @db.VarChar(255)
-  student    Student @relation(fields: [student_id], references: [student_id])
+  google_id  String  @unique @db.Text
+  email      String  @db.Text
+  student    Student @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+
+  @@map("student_login_google")
 }
 
 model StudentLoginApple {
   student_id Int     @id
-  apple_id   String? @unique @db.VarChar(255)
-  email      String? @db.VarChar(255)
-  student    Student @relation(fields: [student_id], references: [student_id])
+  apple_id   String  @unique @db.Text
+  email      String  @db.Text
+  student    Student @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+
+  @@map("student_login_apple")
 }
 
 model StudentLoginEmail {
   student_id    Int     @id
-  email         String? @unique @db.VarChar(255)
-  password_hash String? @db.VarChar(255)
-  student       Student @relation(fields: [student_id], references: [student_id])
-}
+  email         String  @unique @db.Text
+  password_hash String  @db.Text
+  student       Student @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
 
-model StudentActivityStats {
-  student_id              Int       @id
-  last_activity_date      DateTime?
-  consecutive_activity_days Int?
-  total_study_time        Int?
-  questions_streak        Int?
-  student                 Student   @relation(fields: [student_id], references: [student_id])
-}
-
-// School Management Tables
-model School {
-  school_id      Int            @id @default(autoincrement())
-  school         String?        @db.VarChar(255)
-  Group          Group[]
-  SchoolStudent  SchoolStudent[]
-  Teacher        Teacher[]
-}
-
-model Group {
-  group_id              Int                     @id @default(autoincrement())
-  group_name            String?                 @db.VarChar(255)
-  school_id             Int?
-  grade                 String?                 @db.VarChar(50)
-  class                 String?                 @db.VarChar(50)
-  school                School?                 @relation(fields: [school_id], references: [school_id])
-  SchoolStudent         SchoolStudent[]
-  StudentGroupMapping   StudentGroupMapping[]
-  Teacher               Teacher[]
-  TeacherGroupMapping   TeacherGroupMapping[]
-}
-
-model SchoolStudent {
-  student_id Int    @id
-  group_id   Int?
-  school_id  Int?
-  student    Student @relation(fields: [student_id], references: [student_id])
-  group      Group?  @relation(fields: [group_id], references: [group_id])
-  school     School? @relation(fields: [school_id], references: [school_id])
-}
-
-model StudentGroupMapping {
-  student_id Int
-  group_id   Int
-  join_at    DateTime? @db.Date
-  student    Student   @relation(fields: [student_id], references: [student_id])
-  group      Group     @relation(fields: [group_id], references: [group_id])
-
-  @@id([student_id, group_id])
-}
-
-model Teacher {
-  teacher_id            Int                   @id @default(autoincrement())
-  username              String?               @db.VarChar(255)
-  password_hash         String?               @db.VarChar(255)
-  group_id              Int?
-  email                 String?               @db.VarChar(255)
-  school_id             Int?
-  group                 Group?                @relation(fields: [group_id], references: [group_id])
-  school                School?               @relation(fields: [school_id], references: [school_id])
-  TeacherGroupMapping   TeacherGroupMapping[]
-}
-
-model TeacherGroupMapping {
-  teacher_id Int
-  group_id   Int
-  join_at    DateTime? @db.Date
-  role       String?   @db.VarChar(50)
-  teacher    Teacher   @relation(fields: [teacher_id], references: [teacher_id])
-  group      Group     @relation(fields: [group_id], references: [group_id])
-
-  @@id([teacher_id, group_id])
+  @@map("student_login_email")
 }
 
 // Literature / Question Tables
 model Passage {
-  passage_id            Int             @id @default(autoincrement())
-  name                  String?         @db.VarChar(255)
-  author                String?         @db.VarChar(255)
-  book                  String?         @db.VarChar(255)
-  genre                 String?         @db.VarChar(100)
-  dynasty               String?         @db.VarChar(100)
-  style                 String?         @db.VarChar(100)
-  level                 String?         @db.VarChar(50)
-  order_num             Int?
-  QuestionInfo          QuestionInfo[]
-  Paragraph             Paragraph[]
-  Sentence              Sentence[]
-  ShortSentence         ShortSentence[]
-  Word                  Word[]
-  MultipleChoice        MultipleChoice[]
-  Complete              Complete[]
-  QuestionReport        QuestionReport?
+  passage_id Int     @id
+  title      String  @db.VarChar(255)
+  author     String? @db.VarChar(255)
+  book       String? @db.VarChar(255)
+  genre      String  @db.VarChar(100)
+  dynasty    String  @db.VarChar(50)
+  style      String? @db.VarChar(100)
+  order      Int?
+  dse        Boolean @default(false)
+  taiwan30   Boolean @default(false)
+  taiwan15   Boolean @default(false)
+  Paragraph  Paragraph[]
+  Sentence   Sentence[]
+  ShortSentence ShortSentence[]
+  Word       Word[]
+  MultipleChoice MultipleChoice[]
+  Complete   Complete[]
+  QuestionRegistry QuestionRegistry[]
+
+  @@map("passage")
 }
 
-model QuestionInfo {
-  question_id           Int                   @id @default(autoincrement())
-  table_name            String?               @db.VarChar(100)
-  passage_id            Int?
-  type                  String?               @db.VarChar(50)
-  passage               Passage?              @relation(fields: [passage_id], references: [passage_id])
-  Paragraph             Paragraph[]
-  Sentence              Sentence[]
-  ShortSentence         ShortSentence[]
-  Word                  Word[]
-  MultipleChoice        MultipleChoice?
-  TranslationQuestion   TranslationQuestion[]
-  QuestionRecord        QuestionRecord[]
+model QuestionRegistry {
+  question_id  String           @id @default(uuid()) @db.Uuid
+  passage_id   Int
+  source_table String           @db.Text
+  type         String           @db.Text
+  passage      Passage          @relation(fields: [passage_id], references: [passage_id])
+  QuestionRecord QuestionRecord[] @relation("QuestionRecordToRegistry")
+
+  @@map("question_registry")
 }
 
 model Paragraph {
-  paragraph_id  Int          @id @default(autoincrement())
-  question_id   Int?
-  value         String?      @db.Text
-  order_num     Int?
-  passage_id    Int?
-  question_info QuestionInfo? @relation(fields: [question_id], references: [question_id])
-  passage       Passage?     @relation(fields: [passage_id], references: [passage_id])
-  Sentence      Sentence[]
+  paragraph_id Int      @id @default(autoincrement())
+  passage_id   Int?
+  value        String?  @db.Text
+  order        Int?
+  question_id  String   @unique @default(uuid()) @db.Uuid
+  passage      Passage? @relation(fields: [passage_id], references: [passage_id])
+  Sentence     Sentence[]
+
+  @@map("paragraph")
 }
 
 model Sentence {
-  sentence_id           Int                   @id @default(autoincrement())
-  question_id           Int?
-  paragraph_id          Int?
-  value                 String?               @db.Text
-  translation           String?               @db.Text
-  order_num             Int?
-  passage_id            Int?
-  question_info         QuestionInfo?         @relation(fields: [question_id], references: [question_id])
-  paragraph             Paragraph?            @relation(fields: [paragraph_id], references: [paragraph_id])
-  passage               Passage?              @relation(fields: [passage_id], references: [passage_id])
-  ShortSentence         ShortSentence[]
-  TranslationQuestion   TranslationQuestion[]
+  sentence_id  Int      @id @default(autoincrement())
+  paragraph_id Int?
+  value        String?  @db.Text
+  translation  String?  @db.Text
+  order        Int?
+  passage_id   Int?
+  question_id  String   @unique @default(uuid()) @db.Uuid
+  paragraph    Paragraph? @relation(fields: [paragraph_id], references: [paragraph_id])
+  passage      Passage?   @relation(fields: [passage_id], references: [passage_id])
+  ShortSentence ShortSentence[]
+  TranslationQuestion TranslationQuestion?
+
+  @@map("sentence")
 }
 
 model ShortSentence {
-  short_sentence_id Int           @id @default(autoincrement())
-  question_id       Int?
+  short_sentence_id Int      @id @default(autoincrement())
   sentence_id       Int?
-  value             String?       @db.Text
-  order_num         Int?
+  value             String?  @db.Text
+  order             Int?
   passage_id        Int?
-  question_info     QuestionInfo? @relation(fields: [question_id], references: [question_id])
-  sentence          Sentence?     @relation(fields: [sentence_id], references: [sentence_id])
-  passage           Passage?      @relation(fields: [passage_id], references: [passage_id])
+  question_id       String   @unique @default(uuid()) @db.Uuid
+  sentence          Sentence? @relation(fields: [sentence_id], references: [sentence_id])
+  passage           Passage?  @relation(fields: [passage_id], references: [passage_id])
   Word              Word[]
+
+  @@map("short_sentence")
 }
 
 model Word {
-  word_id           Int           @id @default(autoincrement())
-  question_id       Int?
-  short_sentence_id Int?
-  order_num         Int?
-  value             String?       @db.VarChar(100)
-  part_of_speech    String?       @db.VarChar(50)
-  meaning_0         String?       @db.Text
-  meaning_1         String?       @db.Text
-  meaning_2         String?       @db.Text
-  tone              String?       @db.VarChar(50)
-  synonym_0         String?       @db.VarChar(100)
-  synonym_1         String?       @db.VarChar(100)
-  synonym_2         String?       @db.VarChar(100)
-  synonym_3         String?       @db.VarChar(100)
-  synonym_4         String?       @db.VarChar(100)
-  synonym_5         String?       @db.VarChar(100)
+  word_id           Int      @id @default(autoincrement())
   passage_id        Int?
-  question_info     QuestionInfo? @relation(fields: [question_id], references: [question_id])
+  short_sentence_id Int?
+  order             Int?
+  value             String?  @db.Text
+  part_of_speech    String?  @db.Text
+  meaning_0         String?  @db.Text
+  meaning_1         String?  @db.Text
+  meaning_2         String?  @db.Text
+  tone              String?  @db.Text
+  synonym_0         String?  @db.Text
+  synonym_1         String?  @db.Text
+  synonym_2         String?  @db.Text
+  synonym_3         String?  @db.Text
+  synonym_4         String?  @db.Text
+  synonym_5         String?  @db.Text
+  question_id       String?  @default(uuid()) @db.Uuid
   short_sentence    ShortSentence? @relation(fields: [short_sentence_id], references: [short_sentence_id])
-  passage           Passage?      @relation(fields: [passage_id], references: [passage_id])
+  passage           Passage?       @relation(fields: [passage_id], references: [passage_id])
+
+  @@map("word")
 }
 
 model MultipleChoice {
-  question_id     Int          @id
-  question        String?      @db.Text
-  correct         String?      @db.VarChar(255)
-  wrong_1         String?      @db.VarChar(255)
-  wrong_2         String?      @db.VarChar(255)
-  wrong_3         String?      @db.VarChar(255)
-  correct_explain String?      @db.Text
-  wrong_explain_1 String?      @db.Text
-  wrong_explain_2 String?      @db.Text
-  wrong_explain_3 String?      @db.Text
-  level           String?      @db.VarChar(50)
-  passage_id      Int?
-  question_info   QuestionInfo @relation(fields: [question_id], references: [question_id])
-  passage         Passage?     @relation(fields: [passage_id], references: [passage_id])
+  multiple_choice_id Int      @id @default(autoincrement())
+  passage_id         Int?
+  question           String?  @db.Text
+  correct            String?  @db.Text
+  wrong_1            String?  @db.Text
+  wrong_2            String?  @db.Text
+  wrong_3            String?  @db.Text
+  correct_explain    String?  @db.Text
+  wrong_explain_1    String?  @db.Text
+  wrong_explain_2    String?  @db.Text
+  wrong_explain_3    String?  @db.Text
+  level              Int?
+  question_id        String   @unique @default(uuid()) @db.Uuid
+  passage            Passage? @relation(fields: [passage_id], references: [passage_id])
+
+  @@map("multiple_choice")
 }
 
 model TranslationQuestion {
-  sentence_id    Int
-  question_id    Int
-  question       String? @db.Text
-  correct_answer String? @db.Text
-  wrong_answer_1 String? @db.Text
-  wrong_answer_2 String? @db.Text
-  order_num      Int?
-  level          String? @db.VarChar(50)
-  sentence       Sentence @relation(fields: [sentence_id], references: [sentence_id])
-  question_info  QuestionInfo @relation(fields: [question_id], references: [question_id])
+  sentence_id Int     @id
+  question    String? @db.Text
+  correct     String? @db.Text
+  wrong_1     String? @db.Text
+  wrong_2     String? @db.Text
+  level       Int?
+  question_id String  @unique @default(uuid()) @db.Uuid
+  sentence    Sentence @relation(fields: [sentence_id], references: [sentence_id])
 
-  @@id([sentence_id, question_id])
+  @@map("translation_question")
 }
 
 // Records Tables
 model QuestionRecord {
-  record_id    Int           @id @default(autoincrement())
-  questions_id Int?
-  student_id   Int?
-  answer       String?       @db.Text
-  is_correct   Boolean?
-  tested_date  DateTime?
-  is_uploaded  Boolean?
-  duration     Int?
-  question_info QuestionInfo? @relation(fields: [questions_id], references: [question_id])
-  student       Student?      @relation(fields: [student_id], references: [student_id])
+  record_id    Int            @id @default(autoincrement())
+  questions_id String         @db.Uuid
+  student_id   Int
+  answer       String?        @db.Text
+  is_correct   Boolean
+  tested_date  DateTime       @default(now())
+  duration     Decimal?       @db.Decimal
+  QuestionRegistry QuestionRegistry @relation("QuestionRecordToRegistry", fields: [questions_id], references: [question_id], onDelete: Cascade)
+  student      Student        @relation(fields: [student_id], references: [student_id])
+
+  @@map("question_record")
 }
 
 model Complete {
-  state_id   Int       @id @default(autoincrement())
-  student_id Int?
-  passage_id Int?
-  duration   Int?
-  score      Decimal?  @db.Decimal(5, 2)
-  percentage Decimal?  @db.Decimal(5, 2)
-  date_time  DateTime?
-  student    Student?  @relation(fields: [student_id], references: [student_id])
-  passage    Passage?  @relation(fields: [passage_id], references: [passage_id])
+  stats_id   Int      @id @default(autoincrement())
+  student_id Int
+  passage_id Int
+  duration   Decimal? @db.Decimal
+  asked      Int?
+  correct    Int?
+  date_time  DateTime @default(now())
+  student    Student  @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+  passage    Passage  @relation(fields: [passage_id], references: [passage_id], onDelete: Cascade)
+
+  @@map("complete")
 }
 
 model ChallengeModeRecord {
-  student_id          Int       @id
-  best_score          Int?
-  best_time_used      Int?
-  number_of_question  Int?
-  number_of_correct   Int?
-  best_timestamp      DateTime?
-  created_at          DateTime?
-  updated_at          DateTime?
-  student             Student   @relation(fields: [student_id], references: [student_id])
+  student_id            Int       @id
+  best_score            Int?
+  best_time_used        Int?
+  best_questions_answered Int?    @db.SmallInt
+  best_correct_answers  Int?      @db.SmallInt
+  best_timestamp        BigInt?
+  created_at            DateTime? @db.Timestamptz
+  updated_at            DateTime? @db.Timestamptz
+  student               Student   @relation(fields: [student_id], references: [student_id])
+
+  @@map("challenge_mode_records")
 }
 
 model Grading {
-  grade                String   @id @db.VarChar(50)
-  completed_question   Int?
-  correct_percentage   Decimal? @db.Decimal(5, 2)
+  grade              String   @id @db.Text
+  completed_question Float?   @db.DoublePrecision
+  correct_percentage Int?
+
+  @@map("grading")
 }
 
-model QuestionReport {
-  passage_id                    Int     @id
-  numbers_of_word_explanation   Int?
-  numbers_of_word_rearrange     Int?
-  numbers_of_sentence_rearrange Int?
-  number_of_writing_skill       Int?
-  total                         Int?
-  passage                       Passage @relation(fields: [passage_id], references: [passage_id])
+model Teacher {
+  teacher_id   Int     @id @default(autoincrement())
+  username     String  @unique @db.VarChar(255)
+  password_hash String @db.VarChar(255)
+  group_id     Int
+  email        String? @db.VarChar(255)
+  school_id    Int
+
+  @@map("teacher")
 }
+
+// Note: Tables that exist but are not mapped yet:
+// - student_info (has different structure, might need separate model)
+// - question_count (no primary key, might be a view or special table)
+// - dynasty, maxim (not mapped yet)

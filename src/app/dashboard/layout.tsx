@@ -1,26 +1,85 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './layout.module.css';
+import { logout } from '@/lib/auth';
+import { PaletteProvider } from '@/context/PaletteContext';
+import PalettePicker from '@/components/PalettePicker';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const router = useRouter();
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [isAccountMenuVisible, setAccountMenuVisible] = useState(false);
   const [isAlertsMenuVisible, setAlertsMenuVisible] = useState(false);
+  const alertsMenuRef = useRef<HTMLDivElement>(null);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
 
+  const handleSidebarLinkClick = () => {
+    setSidebarVisible(false);
+  };
+
+  const toggleAlertsMenu = () => {
+    setAlertsMenuVisible(!isAlertsMenuVisible);
+    if (!isAlertsMenuVisible) {
+      setAccountMenuVisible(false); // Close account menu when opening alerts menu
+    }
+  };
+
+  const toggleAccountMenu = () => {
+    setAccountMenuVisible(!isAccountMenuVisible);
+    if (!isAccountMenuVisible) {
+      setAlertsMenuVisible(false); // Close alerts menu when opening account menu
+    }
+  };
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Clear any local state
+    setAccountMenuVisible(false);
+    setAlertsMenuVisible(false);
+    setSidebarVisible(false);
+    
+    // Execute logout (removes token, clears user state, and redirects)
+    logout();
+  };
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      
+      // Check if click is outside both menu containers
+      const isOutsideAlertsMenu = alertsMenuRef.current && !alertsMenuRef.current.contains(target);
+      const isOutsideAccountMenu = accountMenuRef.current && !accountMenuRef.current.contains(target);
+      
+      // If both menus are outside the click, close them
+      if (isOutsideAlertsMenu && isOutsideAccountMenu) {
+        setAlertsMenuVisible(false);
+        setAccountMenuVisible(false);
+      }
+    };
+
+    // Only add listener if at least one menu is open
+    if (isAlertsMenuVisible || isAccountMenuVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isAlertsMenuVisible, isAccountMenuVisible]);
+
   const navItems = [
-    { name: 'Classes', path: '/dashboard/classes' },
-    { name: 'Performance', path: '/dashboard/performance-analytics' },
-    { name: 'Content', path: '/dashboard/content-analytics' },
-    { name: 'Student Engagement', path: '/dashboard/student-engagement' },
-    { name: 'Challenge Mode', path: '/dashboard/challenge-mode' },
-    { name: 'Reports', path: '/dashboard/reports-exports' },
-    { name: 'Actions', path: '/dashboard/interventions-actions' },
+    { name: 'Home', path: '/dashboard' },
+    { name: 'Students', path: '/dashboard/students' },
+    { name: 'Learning Analytics', path: '/dashboard/learning-analytics' },
+    { name: 'Reports', path: '/dashboard/reports' },
   ];
 
   const dummyAlerts = [
@@ -29,13 +88,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   ];
 
   return (
+    <PaletteProvider>
     <div className={styles.layout}>
       <aside className={`${styles.sidebar} ${isSidebarVisible ? styles.sidebarVisible : ''}`}>
         <nav>
           <ul>
             {navItems.map((item) => (
               <li key={item.path}>
-                <Link href={item.path}>
+                <Link href={item.path} onClick={handleSidebarLinkClick}>
                   {item.name}
                 </Link>
               </li>
@@ -56,9 +116,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </Link>
           </div>
           <div className={styles.headerRight}>
-            <div 
+            <PalettePicker />
+            <div
+              ref={alertsMenuRef}
               className={styles.alertsIconContainer}
-              onClick={() => setAlertsMenuVisible(!isAlertsMenuVisible)}
+              onClick={toggleAlertsMenu}
             >
               <div className={styles.alertsIcon}>🔔</div>
               {isAlertsMenuVisible && (
@@ -72,15 +134,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               )}
             </div>
             <div 
+              ref={accountMenuRef}
               className={styles.accountIconContainer}
-              onMouseEnter={() => setAccountMenuVisible(true)}
-              onMouseLeave={() => setAccountMenuVisible(false)}
+              onClick={toggleAccountMenu}
             >
               <div className={styles.accountIcon}></div>
               {isAccountMenuVisible && (
                 <div className={styles.accountMenu}>
                   <Link href="/dashboard/settings">Setting</Link>
-                  <Link href="/auth/signout">Sign out</Link>
+                  <a href="#" onClick={handleLogout} style={{ cursor: 'pointer' }}>Sign out</a>
                 </div>
               )}
             </div>
@@ -89,10 +151,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <main className={styles.mainContent}>{children}</main>
       </div>
     </div>
+    </PaletteProvider>
   );
 };
 
 export default DashboardLayout;
-
-
-

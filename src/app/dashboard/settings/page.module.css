@@ -1,0 +1,200 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 680px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* ── Profile header ──────────────────────────────────────────────────────── */
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--p1);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatarMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.avatarName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.avatarSub {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ── Form ────────────────────────────────────────────────────────────────── */
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+
+.formGridFull {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 520px) {
+  .formGrid { grid-template-columns: 1fr; }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+}
+
+.input,
+.select {
+  padding: 8px 11px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--p1);
+}
+
+.inputReadonly {
+  background: #f7f7f7;
+  color: #888;
+  cursor: default;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+.btnRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btnPrimary {
+  padding: 8px 20px;
+  background: var(--p1);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnPrimary:hover   { opacity: 0.9; }
+.btnPrimary:disabled { opacity: 0.5; cursor: default; }
+
+/* ── Feedback messages ───────────────────────────────────────────────────── */
+
+.successMsg {
+  font-size: 13px;
+  color: var(--p2);
+  font-weight: 600;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: var(--p4);
+  font-weight: 600;
+}
+
+/* ── About rows ──────────────────────────────────────────────────────────── */
+
+.aboutGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aboutRow {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.aboutLabel {
+  color: #aaa;
+  min-width: 110px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aboutValue {
+  color: #333;
+  font-weight: 500;
+}
+
+/* ── States ──────────────────────────────────────────────────────────────── */
+
+.loading {
+  font-size: 13px;
+  color: #aaa;
+  padding: 30px 0;
+  text-align: center;
+}

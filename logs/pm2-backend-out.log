@@ -1,0 +1,444 @@
+2026-05-06 20:13:39 +00:00: 
+2026-05-06 20:13:39 +00:00: > backend@1.0.0 start
+2026-05-06 20:13:39 +00:00: > node dist/index.js
+2026-05-06 20:13:39 +00:00: 
+2026-05-06 20:13:40 +00:00: Backend server running on port 5002
+2026-05-08 06:35:18 +00:00: 
+2026-05-08 06:35:18 +00:00: > backend@1.0.0 start
+2026-05-08 06:35:18 +00:00: > node dist/index.js
+2026-05-08 06:35:18 +00:00: 
+2026-05-08 06:35:19 +00:00: Backend server running on port 5002
+2026-05-08 06:35:23 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:38:26 +00:00: 
+2026-05-08 06:38:26 +00:00: > backend@1.0.0 start
+2026-05-08 06:38:26 +00:00: > node dist/index.js
+2026-05-08 06:38:26 +00:00: 
+2026-05-08 06:38:27 +00:00: Backend server running on port 5002
+2026-05-08 06:39:28 +00:00: 
+2026-05-08 06:39:28 +00:00: > backend@1.0.0 start
+2026-05-08 06:39:28 +00:00: > node dist/index.js
+2026-05-08 06:39:28 +00:00: 
+2026-05-08 06:39:29 +00:00: Backend server running on port 5002
+2026-05-08 06:39:41 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:40:40 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:40:54 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:41:09 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:41:09 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:09 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:09 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:09 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:15 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:41:15 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:15 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:15 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:15 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:28 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:41:28 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:28 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:28 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:28 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:34 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:41:34 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:34 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:34 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:34 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:41:46 +00:00: prisma:query SELECT "public"."challenge_record"."challenge_record_id", "public"."challenge_record"."questions_id", "public"."challenge_record"."student_id", "public"."challenge_record"."answer", "public"."challenge_record"."is_correct", "public"."challenge_record"."tested_date", "public"."challenge_record"."duration" FROM "public"."challenge_record" WHERE 1=1 ORDER BY "public"."challenge_record"."challenge_record_id" DESC LIMIT $1 OFFSET $2
+2026-05-08 06:41:51 +00:00: prisma:query SELECT "public"."challenge_record"."challenge_record_id", "public"."challenge_record"."questions_id", "public"."challenge_record"."student_id", "public"."challenge_record"."answer", "public"."challenge_record"."is_correct", "public"."challenge_record"."tested_date", "public"."challenge_record"."duration" FROM "public"."challenge_record" WHERE 1=1 ORDER BY "public"."challenge_record"."challenge_record_id" DESC LIMIT $1 OFFSET $2
+2026-05-08 06:42:25 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:42:28 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:42:28 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:28 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:28 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:28 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:38 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:42:38 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:38 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:38 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:42:38 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:25 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:43:25 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:25 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:25 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:25 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:26 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:43:26 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:26 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:26 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:43:26 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:44:05 +00:00: prisma:query SELECT "public"."class"."class_id", "public"."class"."school_id", "public"."class"."value", "public"."class"."grade" FROM "public"."class" WHERE 1=1 ORDER BY "public"."class"."class_id" ASC OFFSET $1
+2026-05-08 06:44:05 +00:00: prisma:query SELECT "public"."student_personal_info"."student_id", "public"."student_personal_info"."surname", "public"."student_personal_info"."lastname", "public"."student_personal_info"."birthday", "public"."student_personal_info"."initial_test_score", "public"."student_personal_info"."class_id" FROM "public"."student_personal_info" WHERE "public"."student_personal_info"."class_id" IN (NULL) OFFSET $1
+2026-05-08 06:44:05 +00:00: prisma:query SELECT "public"."student"."student_id", "public"."student"."username", "public"."student"."nickname", "public"."student"."login_auth", "public"."student"."register_date", "public"."student"."plan_id", "public"."student"."entitlements_version" FROM "public"."student" WHERE "public"."student"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:44:05 +00:00: prisma:query SELECT "public"."student_login_email"."student_id", "public"."student_login_email"."email", "public"."student_login_email"."password_hash" FROM "public"."student_login_email" WHERE "public"."student_login_email"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:44:05 +00:00: prisma:query SELECT "public"."student_subscription"."student_id", "public"."student_subscription"."plan_id", "public"."student_subscription"."status", "public"."student_subscription"."period_start_date", "public"."student_subscription"."period_end_date", "public"."student_subscription"."canceled_at", "public"."student_subscription"."is_renew" FROM "public"."student_subscription" WHERE "public"."student_subscription"."student_id" IN (NULL) OFFSET $1
+2026-05-08 06:50:00 +00:00: 
+2026-05-08 06:50:00 +00:00: > backend@1.0.0 start
+2026-05-08 06:50:00 +00:00: > node dist/index.js
+2026-05-08 06:50:00 +00:00: 
+2026-05-08 06:50:00 +00:00: [dotenv@17.2.3] injecting env (1) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+2026-05-08 06:50:00 +00:00: Backend server running on port 5002
+2026-05-08 06:50:11 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:50:12 +00:00: prisma:query 
+2026-05-08 06:50:12 +00:00:       SELECT
+2026-05-08 06:50:12 +00:00:         p.passage_id,
+2026-05-08 06:50:12 +00:00:         p.title,
+2026-05-08 06:50:12 +00:00:         count(pr.practice_record_id)           AS attempt_count,
+2026-05-08 06:50:12 +00:00:         ROUND(AVG(pr.wrong_count)::numeric, 1) AS avg_wrong_count
+2026-05-08 06:50:12 +00:00:       FROM practice_record pr
+2026-05-08 06:50:12 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:12 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:12 +00:00:       WHERE pr.tested_date >= NOW() - INTERVAL '7 days'
+2026-05-08 06:50:12 +00:00:       GROUP BY p.passage_id, p.title
+2026-05-08 06:50:12 +00:00:       ORDER BY attempt_count DESC
+2026-05-08 06:50:12 +00:00:       LIMIT 5
+2026-05-08 06:50:12 +00:00:     
+2026-05-08 06:50:12 +00:00: prisma:query 
+2026-05-08 06:50:12 +00:00:       SELECT
+2026-05-08 06:50:12 +00:00:         pr.practice_record_id,
+2026-05-08 06:50:12 +00:00:         pr.tested_date,
+2026-05-08 06:50:12 +00:00:         pr.wrong_count,
+2026-05-08 06:50:12 +00:00:         pr.duration,
+2026-05-08 06:50:12 +00:00:         s.username,
+2026-05-08 06:50:12 +00:00:         s.nickname,
+2026-05-08 06:50:12 +00:00:         p.title AS passage_title,
+2026-05-08 06:50:12 +00:00:         qr.type  AS question_type
+2026-05-08 06:50:12 +00:00:       FROM practice_record pr
+2026-05-08 06:50:12 +00:00:       JOIN student          s  ON s.student_id   = pr.student_id
+2026-05-08 06:50:12 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:12 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:12 +00:00:       ORDER BY pr.tested_date DESC
+2026-05-08 06:50:12 +00:00:       LIMIT 20
+2026-05-08 06:50:12 +00:00:     
+2026-05-08 06:50:12 +00:00: prisma:query 
+2026-05-08 06:50:12 +00:00:       SELECT
+2026-05-08 06:50:12 +00:00:         (SELECT count(*) FROM student)                                                         AS total_students,
+2026-05-08 06:50:12 +00:00:         (SELECT count(DISTINCT student_id) FROM practice_record
+2026-05-08 06:50:12 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS active_this_week,
+2026-05-08 06:50:12 +00:00:         (SELECT ROUND(AVG(wrong_count)::numeric, 1)
+2026-05-08 06:50:12 +00:00:            FROM practice_record WHERE tested_date >= NOW() - INTERVAL '7 days')               AS avg_wrong_count,
+2026-05-08 06:50:12 +00:00:         (SELECT count(*) FROM practice_record
+2026-05-08 06:50:12 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS total_sessions
+2026-05-08 06:50:12 +00:00:     
+2026-05-08 06:50:16 +00:00: prisma:query 
+2026-05-08 06:50:16 +00:00:         SELECT count(*) FROM student
+2026-05-08 06:50:16 +00:00:         WHERE username ILIKE $1 OR COALESCE(nickname, '') ILIKE $2
+2026-05-08 06:50:16 +00:00:       
+2026-05-08 06:50:16 +00:00: prisma:query SELECT
+2026-05-08 06:50:16 +00:00:           s.student_id,
+2026-05-08 06:50:16 +00:00:           s.username,
+2026-05-08 06:50:16 +00:00:           s.nickname,
+2026-05-08 06:50:16 +00:00:           s.register_date,
+2026-05-08 06:50:16 +00:00:           p.value                          AS plan,
+2026-05-08 06:50:16 +00:00:           count(pr.practice_record_id)     AS total_sessions,
+2026-05-08 06:50:16 +00:00:           max(pr.tested_date)              AS last_active
+2026-05-08 06:50:16 +00:00:         FROM student s
+2026-05-08 06:50:16 +00:00:         LEFT JOIN plan             p  ON p.plan_id    = s.plan_id
+2026-05-08 06:50:16 +00:00:         LEFT JOIN practice_record  pr ON pr.student_id = s.student_id
+2026-05-08 06:50:16 +00:00:         WHERE s.username ILIKE $1 OR COALESCE(s.nickname, '') ILIKE $1
+2026-05-08 06:50:16 +00:00:         GROUP BY s.student_id, s.username, s.nickname, s.register_date, p.value
+2026-05-08 06:50:16 +00:00:         ORDER BY total_sessions DESC NULLS LAST
+2026-05-08 06:50:16 +00:00:         LIMIT $2 OFFSET $3
+2026-05-08 06:50:17 +00:00: prisma:query 
+2026-05-08 06:50:17 +00:00:         SELECT count(*) FROM student
+2026-05-08 06:50:17 +00:00:         WHERE username ILIKE $1 OR COALESCE(nickname, '') ILIKE $2
+2026-05-08 06:50:17 +00:00:       
+2026-05-08 06:50:17 +00:00: prisma:query SELECT
+2026-05-08 06:50:17 +00:00:           s.student_id,
+2026-05-08 06:50:17 +00:00:           s.username,
+2026-05-08 06:50:17 +00:00:           s.nickname,
+2026-05-08 06:50:17 +00:00:           s.register_date,
+2026-05-08 06:50:17 +00:00:           p.value                          AS plan,
+2026-05-08 06:50:17 +00:00:           count(pr.practice_record_id)     AS total_sessions,
+2026-05-08 06:50:17 +00:00:           max(pr.tested_date)              AS last_active
+2026-05-08 06:50:17 +00:00:         FROM student s
+2026-05-08 06:50:17 +00:00:         LEFT JOIN plan             p  ON p.plan_id    = s.plan_id
+2026-05-08 06:50:17 +00:00:         LEFT JOIN practice_record  pr ON pr.student_id = s.student_id
+2026-05-08 06:50:17 +00:00:         WHERE s.username ILIKE $1 OR COALESCE(s.nickname, '') ILIKE $1
+2026-05-08 06:50:17 +00:00:         GROUP BY s.student_id, s.username, s.nickname, s.register_date, p.value
+2026-05-08 06:50:17 +00:00:         ORDER BY total_sessions DESC NULLS LAST
+2026-05-08 06:50:17 +00:00:         LIMIT $2 OFFSET $3
+2026-05-08 06:50:20 +00:00: prisma:query 
+2026-05-08 06:50:20 +00:00:       SELECT
+2026-05-08 06:50:20 +00:00:         p.passage_id,
+2026-05-08 06:50:20 +00:00:         p.title,
+2026-05-08 06:50:20 +00:00:         count(pr.practice_record_id)           AS attempt_count,
+2026-05-08 06:50:20 +00:00:         ROUND(AVG(pr.wrong_count)::numeric, 1) AS avg_wrong_count
+2026-05-08 06:50:20 +00:00:       FROM practice_record pr
+2026-05-08 06:50:20 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:20 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:20 +00:00:       WHERE pr.tested_date >= NOW() - INTERVAL '7 days'
+2026-05-08 06:50:20 +00:00:       GROUP BY p.passage_id, p.title
+2026-05-08 06:50:20 +00:00:       ORDER BY attempt_count DESC
+2026-05-08 06:50:20 +00:00:       LIMIT 5
+2026-05-08 06:50:20 +00:00:     
+2026-05-08 06:50:21 +00:00: prisma:query 
+2026-05-08 06:50:21 +00:00:       SELECT
+2026-05-08 06:50:21 +00:00:         pr.practice_record_id,
+2026-05-08 06:50:21 +00:00:         pr.tested_date,
+2026-05-08 06:50:21 +00:00:         pr.wrong_count,
+2026-05-08 06:50:21 +00:00:         pr.duration,
+2026-05-08 06:50:21 +00:00:         s.username,
+2026-05-08 06:50:21 +00:00:         s.nickname,
+2026-05-08 06:50:21 +00:00:         p.title AS passage_title,
+2026-05-08 06:50:21 +00:00:         qr.type  AS question_type
+2026-05-08 06:50:21 +00:00:       FROM practice_record pr
+2026-05-08 06:50:21 +00:00:       JOIN student          s  ON s.student_id   = pr.student_id
+2026-05-08 06:50:21 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:21 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:21 +00:00:       ORDER BY pr.tested_date DESC
+2026-05-08 06:50:21 +00:00:       LIMIT 20
+2026-05-08 06:50:21 +00:00:     
+2026-05-08 06:50:21 +00:00: prisma:query 
+2026-05-08 06:50:21 +00:00:       SELECT
+2026-05-08 06:50:21 +00:00:         (SELECT count(*) FROM student)                                                         AS total_students,
+2026-05-08 06:50:21 +00:00:         (SELECT count(DISTINCT student_id) FROM practice_record
+2026-05-08 06:50:21 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS active_this_week,
+2026-05-08 06:50:21 +00:00:         (SELECT ROUND(AVG(wrong_count)::numeric, 1)
+2026-05-08 06:50:21 +00:00:            FROM practice_record WHERE tested_date >= NOW() - INTERVAL '7 days')               AS avg_wrong_count,
+2026-05-08 06:50:21 +00:00:         (SELECT count(*) FROM practice_record
+2026-05-08 06:50:21 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS total_sessions
+2026-05-08 06:50:21 +00:00:     
+2026-05-08 06:50:34 +00:00: prisma:query 
+2026-05-08 06:50:34 +00:00:       SELECT passage_id, title, author FROM passage ORDER BY passage_id
+2026-05-08 06:50:34 +00:00:     
+2026-05-08 06:50:34 +00:00: prisma:query SELECT qr.type,
+2026-05-08 06:50:34 +00:00:                 count(pr.practice_record_id)           AS attempts,
+2026-05-08 06:50:34 +00:00:                 ROUND(AVG(pr.wrong_count)::numeric, 2) AS avg_wrong
+2026-05-08 06:50:34 +00:00:          FROM practice_record pr
+2026-05-08 06:50:34 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:34 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:34 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:50:34 +00:00:          GROUP BY qr.type
+2026-05-08 06:50:34 +00:00:          ORDER BY avg_wrong DESC NULLS LAST
+2026-05-08 06:50:34 +00:00: prisma:query SELECT EXTRACT(DOW FROM (pr.tested_date + INTERVAL '8 hours'))::int AS dow,
+2026-05-08 06:50:34 +00:00:                 count(*) AS attempts
+2026-05-08 06:50:34 +00:00:          FROM practice_record pr
+2026-05-08 06:50:34 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:34 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:34 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:50:34 +00:00:          GROUP BY dow
+2026-05-08 06:50:34 +00:00:          ORDER BY dow
+2026-05-08 06:50:34 +00:00: prisma:query SELECT EXTRACT(HOUR FROM (pr.tested_date + INTERVAL '8 hours'))::int AS hour,
+2026-05-08 06:50:34 +00:00:                 count(*) AS attempts
+2026-05-08 06:50:34 +00:00:          FROM practice_record pr
+2026-05-08 06:50:34 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:34 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:34 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:50:34 +00:00:          GROUP BY hour
+2026-05-08 06:50:34 +00:00:          ORDER BY hour
+2026-05-08 06:50:34 +00:00: prisma:query SELECT p.passage_id, p.title, p.author,
+2026-05-08 06:50:34 +00:00:                 count(pr.practice_record_id)                                        AS attempts,
+2026-05-08 06:50:34 +00:00:                 count(DISTINCT pr.student_id)                                       AS students,
+2026-05-08 06:50:34 +00:00:                 ROUND(AVG(pr.wrong_count)::numeric, 1)                             AS avg_wrong,
+2026-05-08 06:50:34 +00:00:                 ROUND(100.0 * count(CASE WHEN pr.wrong_count = 0 THEN 1 END)
+2026-05-08 06:50:34 +00:00:                       / NULLIF(count(*), 0), 1)                                    AS pct_perfect,
+2026-05-08 06:50:34 +00:00:                 ROUND(AVG(pr.duration)::numeric, 0)                                AS avg_duration
+2026-05-08 06:50:34 +00:00:          FROM practice_record pr
+2026-05-08 06:50:34 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:34 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:34 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:50:34 +00:00:          GROUP BY p.passage_id, p.title, p.author
+2026-05-08 06:50:34 +00:00:          ORDER BY attempts DESC
+2026-05-08 06:50:37 +00:00: prisma:query 
+2026-05-08 06:50:37 +00:00:       SELECT
+2026-05-08 06:50:37 +00:00:         p.passage_id,
+2026-05-08 06:50:37 +00:00:         p.title,
+2026-05-08 06:50:37 +00:00:         count(pr.practice_record_id)           AS attempt_count,
+2026-05-08 06:50:37 +00:00:         ROUND(AVG(pr.wrong_count)::numeric, 1) AS avg_wrong_count
+2026-05-08 06:50:37 +00:00:       FROM practice_record pr
+2026-05-08 06:50:37 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:37 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:37 +00:00:       WHERE pr.tested_date >= NOW() - INTERVAL '7 days'
+2026-05-08 06:50:37 +00:00:       GROUP BY p.passage_id, p.title
+2026-05-08 06:50:37 +00:00:       ORDER BY attempt_count DESC
+2026-05-08 06:50:37 +00:00:       LIMIT 5
+2026-05-08 06:50:37 +00:00:     
+2026-05-08 06:50:37 +00:00: prisma:query 
+2026-05-08 06:50:37 +00:00:       SELECT
+2026-05-08 06:50:37 +00:00:         pr.practice_record_id,
+2026-05-08 06:50:37 +00:00:         pr.tested_date,
+2026-05-08 06:50:37 +00:00:         pr.wrong_count,
+2026-05-08 06:50:37 +00:00:         pr.duration,
+2026-05-08 06:50:37 +00:00:         s.username,
+2026-05-08 06:50:37 +00:00:         s.nickname,
+2026-05-08 06:50:37 +00:00:         p.title AS passage_title,
+2026-05-08 06:50:37 +00:00:         qr.type  AS question_type
+2026-05-08 06:50:37 +00:00:       FROM practice_record pr
+2026-05-08 06:50:37 +00:00:       JOIN student          s  ON s.student_id   = pr.student_id
+2026-05-08 06:50:37 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:37 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:37 +00:00:       ORDER BY pr.tested_date DESC
+2026-05-08 06:50:37 +00:00:       LIMIT 20
+2026-05-08 06:50:37 +00:00:     
+2026-05-08 06:50:38 +00:00: prisma:query 
+2026-05-08 06:50:38 +00:00:       SELECT
+2026-05-08 06:50:38 +00:00:         (SELECT count(*) FROM student)                                                         AS total_students,
+2026-05-08 06:50:38 +00:00:         (SELECT count(DISTINCT student_id) FROM practice_record
+2026-05-08 06:50:38 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS active_this_week,
+2026-05-08 06:50:38 +00:00:         (SELECT ROUND(AVG(wrong_count)::numeric, 1)
+2026-05-08 06:50:38 +00:00:            FROM practice_record WHERE tested_date >= NOW() - INTERVAL '7 days')               AS avg_wrong_count,
+2026-05-08 06:50:38 +00:00:         (SELECT count(*) FROM practice_record
+2026-05-08 06:50:38 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS total_sessions
+2026-05-08 06:50:38 +00:00:     
+2026-05-08 06:50:41 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:50:42 +00:00: prisma:query 
+2026-05-08 06:50:42 +00:00:       SELECT
+2026-05-08 06:50:42 +00:00:         p.passage_id,
+2026-05-08 06:50:42 +00:00:         p.title,
+2026-05-08 06:50:42 +00:00:         count(pr.practice_record_id)           AS attempt_count,
+2026-05-08 06:50:42 +00:00:         ROUND(AVG(pr.wrong_count)::numeric, 1) AS avg_wrong_count
+2026-05-08 06:50:42 +00:00:       FROM practice_record pr
+2026-05-08 06:50:42 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:42 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:42 +00:00:       WHERE pr.tested_date >= NOW() - INTERVAL '7 days'
+2026-05-08 06:50:42 +00:00:       GROUP BY p.passage_id, p.title
+2026-05-08 06:50:42 +00:00:       ORDER BY attempt_count DESC
+2026-05-08 06:50:42 +00:00:       LIMIT 5
+2026-05-08 06:50:42 +00:00:     
+2026-05-08 06:50:43 +00:00: prisma:query 
+2026-05-08 06:50:43 +00:00:       SELECT
+2026-05-08 06:50:43 +00:00:         pr.practice_record_id,
+2026-05-08 06:50:43 +00:00:         pr.tested_date,
+2026-05-08 06:50:43 +00:00:         pr.wrong_count,
+2026-05-08 06:50:43 +00:00:         pr.duration,
+2026-05-08 06:50:43 +00:00:         s.username,
+2026-05-08 06:50:43 +00:00:         s.nickname,
+2026-05-08 06:50:43 +00:00:         p.title AS passage_title,
+2026-05-08 06:50:43 +00:00:         qr.type  AS question_type
+2026-05-08 06:50:43 +00:00:       FROM practice_record pr
+2026-05-08 06:50:43 +00:00:       JOIN student          s  ON s.student_id   = pr.student_id
+2026-05-08 06:50:43 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:43 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:43 +00:00:       ORDER BY pr.tested_date DESC
+2026-05-08 06:50:43 +00:00:       LIMIT 20
+2026-05-08 06:50:43 +00:00:     
+2026-05-08 06:50:43 +00:00: prisma:query 
+2026-05-08 06:50:43 +00:00:       SELECT
+2026-05-08 06:50:43 +00:00:         (SELECT count(*) FROM student)                                                         AS total_students,
+2026-05-08 06:50:43 +00:00:         (SELECT count(DISTINCT student_id) FROM practice_record
+2026-05-08 06:50:43 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS active_this_week,
+2026-05-08 06:50:43 +00:00:         (SELECT ROUND(AVG(wrong_count)::numeric, 1)
+2026-05-08 06:50:43 +00:00:            FROM practice_record WHERE tested_date >= NOW() - INTERVAL '7 days')               AS avg_wrong_count,
+2026-05-08 06:50:43 +00:00:         (SELECT count(*) FROM practice_record
+2026-05-08 06:50:43 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS total_sessions
+2026-05-08 06:50:43 +00:00:     
+2026-05-08 06:50:48 +00:00: prisma:query SELECT "public"."teacher"."teacher_id", "public"."teacher"."username", "public"."teacher"."password_hash", "public"."teacher"."email", "public"."teacher"."group_id", "public"."teacher"."school_id" FROM "public"."teacher" WHERE "public"."teacher"."username" = $1 LIMIT $2 OFFSET $3
+2026-05-08 06:50:49 +00:00: prisma:query 
+2026-05-08 06:50:49 +00:00:       SELECT
+2026-05-08 06:50:49 +00:00:         p.passage_id,
+2026-05-08 06:50:49 +00:00:         p.title,
+2026-05-08 06:50:49 +00:00:         count(pr.practice_record_id)           AS attempt_count,
+2026-05-08 06:50:49 +00:00:         ROUND(AVG(pr.wrong_count)::numeric, 1) AS avg_wrong_count
+2026-05-08 06:50:49 +00:00:       FROM practice_record pr
+2026-05-08 06:50:49 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:49 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:49 +00:00:       WHERE pr.tested_date >= NOW() - INTERVAL '7 days'
+2026-05-08 06:50:49 +00:00:       GROUP BY p.passage_id, p.title
+2026-05-08 06:50:49 +00:00:       ORDER BY attempt_count DESC
+2026-05-08 06:50:49 +00:00:       LIMIT 5
+2026-05-08 06:50:49 +00:00:     
+2026-05-08 06:50:49 +00:00: prisma:query 
+2026-05-08 06:50:49 +00:00:       SELECT
+2026-05-08 06:50:49 +00:00:         pr.practice_record_id,
+2026-05-08 06:50:49 +00:00:         pr.tested_date,
+2026-05-08 06:50:49 +00:00:         pr.wrong_count,
+2026-05-08 06:50:49 +00:00:         pr.duration,
+2026-05-08 06:50:49 +00:00:         s.username,
+2026-05-08 06:50:49 +00:00:         s.nickname,
+2026-05-08 06:50:49 +00:00:         p.title AS passage_title,
+2026-05-08 06:50:49 +00:00:         qr.type  AS question_type
+2026-05-08 06:50:49 +00:00:       FROM practice_record pr
+2026-05-08 06:50:49 +00:00:       JOIN student          s  ON s.student_id   = pr.student_id
+2026-05-08 06:50:49 +00:00:       JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:50:49 +00:00:       JOIN passage           p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:50:49 +00:00:       ORDER BY pr.tested_date DESC
+2026-05-08 06:50:49 +00:00:       LIMIT 20
+2026-05-08 06:50:49 +00:00:     
+2026-05-08 06:50:49 +00:00: prisma:query 
+2026-05-08 06:50:49 +00:00:       SELECT
+2026-05-08 06:50:49 +00:00:         (SELECT count(*) FROM student)                                                         AS total_students,
+2026-05-08 06:50:49 +00:00:         (SELECT count(DISTINCT student_id) FROM practice_record
+2026-05-08 06:50:49 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS active_this_week,
+2026-05-08 06:50:49 +00:00:         (SELECT ROUND(AVG(wrong_count)::numeric, 1)
+2026-05-08 06:50:49 +00:00:            FROM practice_record WHERE tested_date >= NOW() - INTERVAL '7 days')               AS avg_wrong_count,
+2026-05-08 06:50:49 +00:00:         (SELECT count(*) FROM practice_record
+2026-05-08 06:50:49 +00:00:            WHERE tested_date >= NOW() - INTERVAL '7 days')                                    AS total_sessions
+2026-05-08 06:50:49 +00:00:     
+2026-05-08 06:50:50 +00:00: prisma:query 
+2026-05-08 06:50:50 +00:00:         SELECT count(*) FROM student
+2026-05-08 06:50:50 +00:00:         WHERE username ILIKE $1 OR COALESCE(nickname, '') ILIKE $2
+2026-05-08 06:50:50 +00:00:       
+2026-05-08 06:50:50 +00:00: prisma:query SELECT
+2026-05-08 06:50:50 +00:00:           s.student_id,
+2026-05-08 06:50:50 +00:00:           s.username,
+2026-05-08 06:50:50 +00:00:           s.nickname,
+2026-05-08 06:50:50 +00:00:           s.register_date,
+2026-05-08 06:50:50 +00:00:           p.value                          AS plan,
+2026-05-08 06:50:50 +00:00:           count(pr.practice_record_id)     AS total_sessions,
+2026-05-08 06:50:50 +00:00:           max(pr.tested_date)              AS last_active
+2026-05-08 06:50:50 +00:00:         FROM student s
+2026-05-08 06:50:50 +00:00:         LEFT JOIN plan             p  ON p.plan_id    = s.plan_id
+2026-05-08 06:50:50 +00:00:         LEFT JOIN practice_record  pr ON pr.student_id = s.student_id
+2026-05-08 06:50:50 +00:00:         WHERE s.username ILIKE $1 OR COALESCE(s.nickname, '') ILIKE $1
+2026-05-08 06:50:50 +00:00:         GROUP BY s.student_id, s.username, s.nickname, s.register_date, p.value
+2026-05-08 06:50:50 +00:00:         ORDER BY total_sessions DESC NULLS LAST
+2026-05-08 06:50:50 +00:00:         LIMIT $2 OFFSET $3
+2026-05-08 06:50:51 +00:00: prisma:query 
+2026-05-08 06:50:51 +00:00:         SELECT count(*) FROM student
+2026-05-08 06:50:51 +00:00:         WHERE username ILIKE $1 OR COALESCE(nickname, '') ILIKE $2
+2026-05-08 06:50:51 +00:00:       
+2026-05-08 06:50:51 +00:00: prisma:query SELECT
+2026-05-08 06:50:51 +00:00:           s.student_id,
+2026-05-08 06:50:51 +00:00:           s.username,
+2026-05-08 06:50:51 +00:00:           s.nickname,
+2026-05-08 06:50:51 +00:00:           s.register_date,
+2026-05-08 06:50:51 +00:00:           p.value                          AS plan,
+2026-05-08 06:50:51 +00:00:           count(pr.practice_record_id)     AS total_sessions,
+2026-05-08 06:50:51 +00:00:           max(pr.tested_date)              AS last_active
+2026-05-08 06:50:51 +00:00:         FROM student s
+2026-05-08 06:50:51 +00:00:         LEFT JOIN plan             p  ON p.plan_id    = s.plan_id
+2026-05-08 06:50:51 +00:00:         LEFT JOIN practice_record  pr ON pr.student_id = s.student_id
+2026-05-08 06:50:51 +00:00:         WHERE s.username ILIKE $1 OR COALESCE(s.nickname, '') ILIKE $1
+2026-05-08 06:50:51 +00:00:         GROUP BY s.student_id, s.username, s.nickname, s.register_date, p.value
+2026-05-08 06:50:51 +00:00:         ORDER BY total_sessions DESC NULLS LAST
+2026-05-08 06:50:51 +00:00:         LIMIT $2 OFFSET $3
+2026-05-08 06:51:33 +00:00: prisma:query 
+2026-05-08 06:51:33 +00:00:       SELECT passage_id, title, author FROM passage ORDER BY passage_id
+2026-05-08 06:51:33 +00:00:     
+2026-05-08 06:51:33 +00:00: prisma:query SELECT EXTRACT(HOUR FROM (pr.tested_date + INTERVAL '8 hours'))::int AS hour,
+2026-05-08 06:51:33 +00:00:                 count(*) AS attempts
+2026-05-08 06:51:33 +00:00:          FROM practice_record pr
+2026-05-08 06:51:33 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:51:33 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:51:33 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:51:33 +00:00:          GROUP BY hour
+2026-05-08 06:51:33 +00:00:          ORDER BY hour
+2026-05-08 06:51:33 +00:00: prisma:query SELECT qr.type,
+2026-05-08 06:51:33 +00:00:                 count(pr.practice_record_id)           AS attempts,
+2026-05-08 06:51:33 +00:00:                 ROUND(AVG(pr.wrong_count)::numeric, 2) AS avg_wrong
+2026-05-08 06:51:33 +00:00:          FROM practice_record pr
+2026-05-08 06:51:33 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:51:33 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:51:33 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:51:33 +00:00:          GROUP BY qr.type
+2026-05-08 06:51:33 +00:00:          ORDER BY avg_wrong DESC NULLS LAST
+2026-05-08 06:51:33 +00:00: prisma:query SELECT EXTRACT(DOW FROM (pr.tested_date + INTERVAL '8 hours'))::int AS dow,
+2026-05-08 06:51:33 +00:00:                 count(*) AS attempts
+2026-05-08 06:51:33 +00:00:          FROM practice_record pr
+2026-05-08 06:51:33 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:51:33 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:51:33 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:51:33 +00:00:          GROUP BY dow
+2026-05-08 06:51:33 +00:00:          ORDER BY dow
+2026-05-08 06:51:33 +00:00: prisma:query SELECT p.passage_id, p.title, p.author,
+2026-05-08 06:51:33 +00:00:                 count(pr.practice_record_id)                                        AS attempts,
+2026-05-08 06:51:33 +00:00:                 count(DISTINCT pr.student_id)                                       AS students,
+2026-05-08 06:51:33 +00:00:                 ROUND(AVG(pr.wrong_count)::numeric, 1)                             AS avg_wrong,
+2026-05-08 06:51:33 +00:00:                 ROUND(100.0 * count(CASE WHEN pr.wrong_count = 0 THEN 1 END)
+2026-05-08 06:51:33 +00:00:                       / NULLIF(count(*), 0), 1)                                    AS pct_perfect,
+2026-05-08 06:51:33 +00:00:                 ROUND(AVG(pr.duration)::numeric, 0)                                AS avg_duration
+2026-05-08 06:51:33 +00:00:          FROM practice_record pr
+2026-05-08 06:51:33 +00:00:          JOIN question_registry qr ON qr.question_id = pr.question_id
+2026-05-08 06:51:33 +00:00:          JOIN passage            p  ON p.passage_id   = qr.passage_id
+2026-05-08 06:51:33 +00:00:          WHERE pr.tested_date >= NOW() - INTERVAL '30 days' 
+2026-05-08 06:51:33 +00:00:          GROUP BY p.passage_id, p.title, p.author
+2026-05-08 06:51:33 +00:00:          ORDER BY attempts DESC

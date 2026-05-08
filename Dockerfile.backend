@@ -4,16 +4,17 @@ WORKDIR /app/backend
 
 RUN apk add postgresql-client
 COPY backend/package.json backend/package-lock.json ./
+COPY backend/prisma ./prisma
+COPY backend/prisma.config.ts ./
 RUN npm install
 
 COPY backend/src ./src
-COPY backend/prisma ./prisma
 COPY backend/tsconfig.json ./
 
 RUN npx prisma generate
 RUN npm run build
 
-EXPOSE 5001
+EXPOSE 5003
 
 ENV NODE_ENV production
 

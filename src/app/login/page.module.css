@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.leftPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F8FFF4;
+  padding: 40px;
+}
+
+.rightPanel {
+  flex: 1;
+  position: relative;
+  background-color: #f0f0f0;
+}
+
+.backgroundImage {
+  object-fit: cover;
+}
+
+.form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 16px;
+  color: #333;
+  font-weight: normal;
+}
+
+.input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #A8C6A3;
+}
+
+.error {
+  color: #ff0000;
+  font-size: 16px;
+  margin-top: -8px;
+}
+
+.button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #A8C6A3;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #8FB28B;
+}
+
+.button:active {
+  background-color: #7A9F76;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .rightPanel {
+    min-height: 300px;
+  }
+}

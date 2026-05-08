@@ -1,52 +1,163 @@
-.title {
-    margin-bottom: 20px;
-    font-size: 14px; /* 1.4rem is 14px as body font is 10px */
-    color: #333;
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
 }
 
-.card {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: transparent;
-    max-width: 400px; /* Fixed maximum width for boxes */
+/* ── Stat cards ──────────────────────────────────────────────────────────── */
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
 }
 
-.card h2 {
-    margin-top: 0;
-    font-size: 12px;
-    color: #333;
+.statCard {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  border-left: 5px solid var(--card-accent, var(--p1));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.statLabel {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.card li {
-    margin-bottom: 10px;
-    color: #555; /* Grey color for list items */
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.1;
 }
 
-.button {
-    background-color: #777; /* Grey button */
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 10px;
+.statSub {
+  font-size: 11px;
+  color: #aaa;
 }
 
-.button:hover {
-    background-color: #555; /* Darker grey on hover */
+/* ── Two-column section ──────────────────────────────────────────────────── */
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
+@media (max-width: 720px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+}
 
+/* ── Shared panel ────────────────────────────────────────────────────────── */
+
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panelTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* ── Activity feed ───────────────────────────────────────────────────────── */
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+.activityRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #444;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.activityRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activityDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--p1);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.activityMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.activityStudent {
+  font-weight: 600;
+  color: #333;
+}
+
+.activityMeta {
+  color: #888;
+  font-size: 12px;
+}
+
+.activityWrong {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--p4);
+  white-space: nowrap;
+}
+
+.activityWrongZero {
+  color: var(--p2);
+}
+
+/* ── Loading / error states ──────────────────────────────────────────────── */
+
+.loading {
+  font-size: 13px;
+  color: #aaa;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--p4);
+  padding: 20px 0;
+  text-align: center;
+}

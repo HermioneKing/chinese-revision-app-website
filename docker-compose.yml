@@ -6,13 +6,18 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "3003:3000"
     volumes:
       - .:/app
       - /app/node_modules # Exclude node_modules from host mount
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_BASE_URL=http://backend:5001/api # Corrected for inter-container communication
+      # NEXT_PUBLIC_* is embedded for the browser — must reach the host-mapped backend, not hostname "backend".
+      - NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:5003/api
+      # RSC/server fetches from inside Docker network:
+      - SERVER_API_BASE_URL=http://backend:5003/api
+      # Browser can use origin /api/... rewrite when NEXT_PUBLIC_API_BASE_URL is empty:
+      - NEXT_BACKEND_ORIGIN=http://backend:5003
     env_file: .env
     depends_on:
       - backend
@@ -22,17 +27,18 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5001:5001"
+      - "5003:5003"
     # REMOVE THIS: - .:/app # Remove volume mount to prevent overwriting built files
     volumes:
       - /app/backend/node_modules # Exclude backend node_modules from host mount
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://user:password@db:5432/mydb # Connect to the db service
       - JWT_SECRET=${JWT_SECRET}
-    env_file: .env
-    depends_on:
-      - db # Ensure db service starts before backend
+      # Container cannot use 127.0.0.1 for host Postgres; route via host gateway.
+      - DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5433/dse12app_demo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file: backend/.env
 
   db:
     image: postgres:16-alpine # Use a recent stable PostgreSQL image
