@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        # Same host your browser uses; 127.0.0.1 only works when the browser runs on the Docker host.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5003/api}
     ports:
       - "3003:3000"
     volumes:
@@ -12,8 +15,10 @@ services:
       - /app/node_modules # Exclude node_modules from host mount
     environment:
       - NODE_ENV=development
-      # NEXT_PUBLIC_* is embedded for the browser — must reach the host-mapped backend, not hostname "backend".
-      - NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:5003/api
+      # Override root .env PORT=5003 (backend); Next must listen on container port 3000 (see ports 3003:3000).
+      - PORT=3000
+      # Browser calls this URL from the client machine (not from inside Docker).
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5003/api}
       # RSC/server fetches from inside Docker network:
       - SERVER_API_BASE_URL=http://backend:5003/api
       # Browser can use origin /api/... rewrite when NEXT_PUBLIC_API_BASE_URL is empty:
@@ -28,28 +33,20 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "5003:5003"
-    # REMOVE THIS: - .:/app # Remove volume mount to prevent overwriting built files
     volumes:
       - /app/backend/node_modules # Exclude backend node_modules from host mount
     environment:
       - NODE_ENV=development
       - JWT_SECRET=${JWT_SECRET}
-      # Container cannot use 127.0.0.1 for host Postgres; route via host gateway.
-      - DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5433/dse12app_demo
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      # Postgres from /root/database/docker-compose.yml — service `postgres`, port 5432 inside Docker.
+      # Shared network name is fixed (`dse_revision_db`) so this repo works on any machine after DB stack is up.
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/dse12app_demo
     env_file: backend/.env
+    networks:
+      - default
+      - dse_revision_db
 
-  db:
-    image: postgres:16-alpine # Use a recent stable PostgreSQL image
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    volumes:
-      - db_data:/var/lib/postgresql/data # Persistent data volume
-
-volumes:
-  db_data: # Define the named volume for database persistence
+networks:
+  dse_revision_db:
+    external: true
+    name: dse_revision_db
