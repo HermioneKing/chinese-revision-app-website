@@ -33,6 +33,26 @@ interface StudentDetail {
   }>;
   passages_attempted: number;
   total_passages: number;
+  total_time: number;
+  last_online: string | null;
+}
+
+interface PassageRow {
+  passage_id: number;
+  title: string;
+  attempts: number;
+  avg_wrong: number | null;
+  pct_perfect: number | null;
+  total_time: number;
+}
+
+interface QuestionRow {
+  question_id: string;
+  type: string;
+  question_text: string | null;
+  attempts: number;
+  avg_wrong: number | null;
+  pct_perfect: number | null;
 }
 
 interface PerfPoint {
@@ -56,19 +76,29 @@ const QUESTION_TYPE_LABELS: Record<string, string> = {
   sentence_rearrange: 'Sentence rearrange',
 };
 
-function formatDate(d: string): string {
+function formatDate(d: string | null): string {
+  if (!d) return '—';
   return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-function formatDateTime(d: string): string {
+function formatDateTime(d: string | null): string {
+  if (!d) return '—';
   return new Date(d).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
 function formatDuration(secs: number | null): string {
   if (secs === null) return '—';
-  const m = Math.floor(secs / 60);
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
   const s = Math.round(secs % 60);
-  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
+function formatTotalTime(secs: number): string {
+  if (secs === 0) return '—';
+  return formatDuration(secs);
 }
 
 function formatPeriodLabel(dateStr: string, groupBy: GroupBy): string {
@@ -199,6 +229,14 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState<string | null>(null);
 
+  const [passages,        setPassages]        = useState<PassageRow[]>([]);
+  const [passagesLoading, setPassagesLoading] = useState(false);
+  const [passagesError,   setPassagesError]   = useState<string | null>(null);
+
+  const [selectedPassageId, setSelectedPassageId] = useState<number | null>(null);
+  const [questions,         setQuestions]          = useState<QuestionRow[]>([]);
+  const [questionsLoading,  setQuestionsLoading]   = useState(false);
+
   useEffect(() => {
     apiGet(`/students/${id}`)
       .then(r => { if (!r.ok) throw new Error('Student not found'); return r.json(); })
@@ -207,11 +245,37 @@ export default function StudentDetailPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  useEffect(() => {
+    if (!id) return;
+    setPassagesLoading(true);
+    apiGet(`/students/${id}/passages`)
+      .then(r => { if (!r.ok) throw new Error('Failed to load'); return r.json(); })
+      .then(setPassages)
+      .catch(e => setPassagesError(e.message))
+      .finally(() => setPassagesLoading(false));
+  }, [id]);
+
+  const handlePassageClick = async (passageId: number) => {
+    if (selectedPassageId === passageId) {
+      setSelectedPassageId(null);
+      setQuestions([]);
+      return;
+    }
+    setSelectedPassageId(passageId);
+    setQuestionsLoading(true);
+    try {
+      const res = await apiGet(`/students/${id}/passages/${passageId}`);
+      if (res.ok) setQuestions(await res.json());
+    } finally {
+      setQuestionsLoading(false);
+    }
+  };
+
   if (loading) return <p className={styles.loading}>Loading…</p>;
   if (error)   return <p className={styles.error}>{error}</p>;
   if (!data)   return null;
 
-  const { student, history, passages_attempted, total_passages } = data;
+  const { student, history, passages_attempted, total_passages, total_time, last_online } = data;
   const displayName = student.nickname
     ? `${student.nickname} (${student.username})`
     : student.username;
@@ -256,10 +320,105 @@ export default function StudentDetailPage() {
             <span style={{ fontSize: 14, color: '#aaa', fontWeight: 400 }}> / {total_passages}</span>
           </div>
         </div>
+        <div className={styles.statCard} style={{ '--card-accent': 'var(--p3)' } as React.CSSProperties}>
+          <div className={styles.statLabel}>Total time</div>
+          <div className={styles.statValue} style={{ fontSize: 20 }}>{formatTotalTime(total_time)}</div>
+        </div>
+        <div className={styles.statCard} style={{ '--card-accent': 'var(--p5)' } as React.CSSProperties}>
+          <div className={styles.statLabel}>Last online</div>
+          <div className={styles.statValue} style={{ fontSize: 16 }}>{formatDateTime(last_online)}</div>
+        </div>
       </div>
 
       {/* Interactive performance chart */}
       <PerformanceChart studentId={student.student_id} />
+
+      {/* Passage performance */}
+      <div className={styles.panel}>
+        <h2 className={styles.panelTitle}>Passage performance</h2>
+        {passagesLoading && <p className={styles.loading}>Loading…</p>}
+        {passagesError   && <p className={styles.error}>{passagesError}</p>}
+        {!passagesLoading && !passagesError && (
+          <div style={{ overflowX: 'auto' }}>
+            <table className={styles.historyTable}>
+              <thead>
+                <tr>
+                  <th>Passage</th>
+                  <th>Attempts</th>
+                  <th>Avg wrong ↓</th>
+                  <th>% Perfect</th>
+                  <th>Total time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {passages.length === 0 && (
+                  <tr><td colSpan={5} className={styles.loading}>No passage data yet.</td></tr>
+                )}
+                {passages.map(p => (
+                  <React.Fragment key={p.passage_id}>
+                    <tr
+                      className={`${styles.passageRow} ${selectedPassageId === p.passage_id ? styles.passageRowSelected : ''}`}
+                      onClick={() => handlePassageClick(p.passage_id)}
+                    >
+                      <td className={styles.passageTitleCell}>
+                        <span className={styles.expandIcon}>
+                          {selectedPassageId === p.passage_id ? '▼' : '▶'}
+                        </span>
+                        {p.title}
+                      </td>
+                      <td>{p.attempts}</td>
+                      <td className={p.avg_wrong !== null && p.avg_wrong > 0 ? styles.wrongBad : styles.wrongGood}>
+                        {p.avg_wrong !== null ? p.avg_wrong.toFixed(2) : '—'}
+                      </td>
+                      <td>{p.pct_perfect !== null ? `${p.pct_perfect.toFixed(1)}%` : '—'}</td>
+                      <td>{formatTotalTime(p.total_time)}</td>
+                    </tr>
+                    {selectedPassageId === p.passage_id && (
+                      <tr className={styles.questionExpandRow}>
+                        <td colSpan={5} className={styles.questionExpandCell}>
+                          {questionsLoading ? (
+                            <p className={styles.loading} style={{ padding: '16px' }}>Loading questions…</p>
+                          ) : (
+                            <div className={styles.questionExpandScroll}>
+                              <table className={styles.miniTable}>
+                                <thead>
+                                  <tr>
+                                    <th style={{ position: 'sticky', top: 0, background: '#f8faf8', zIndex: 1 }}>Question</th>
+                                    <th style={{ position: 'sticky', top: 0, background: '#f8faf8', zIndex: 1 }}>Type</th>
+                                    <th style={{ position: 'sticky', top: 0, background: '#f8faf8', zIndex: 1 }}>Attempts</th>
+                                    <th style={{ position: 'sticky', top: 0, background: '#f8faf8', zIndex: 1 }}>Avg wrong ↓</th>
+                                    <th style={{ position: 'sticky', top: 0, background: '#f8faf8', zIndex: 1 }}>% Perfect</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {questions.length === 0 && (
+                                    <tr><td colSpan={5} className={styles.loading}>No data.</td></tr>
+                                  )}
+                                  {questions.map(q => (
+                                    <tr key={q.question_id}>
+                                      <td className={styles.questionTextCell}>{q.question_text ?? '—'}</td>
+                                      <td>{QUESTION_TYPE_LABELS[q.type] ?? q.type}</td>
+                                      <td>{q.attempts}</td>
+                                      <td className={q.avg_wrong !== null && q.avg_wrong > 0 ? styles.wrongBad : styles.wrongGood}>
+                                        {q.avg_wrong !== null ? q.avg_wrong.toFixed(2) : '—'}
+                                      </td>
+                                      <td>{q.pct_perfect !== null ? `${q.pct_perfect.toFixed(1)}%` : '—'}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Practice history */}
       <div className={styles.panel}>

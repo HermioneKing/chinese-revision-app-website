@@ -112,6 +112,10 @@
 .usernameCell {
   font-weight: 600;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .nicknameCell {
@@ -171,6 +175,141 @@
 .pageInfo {
   color: #888;
 }
+
+/* ── Usage overview (top/bottom extremes) ────────────────────────────────── */
+
+.extremesPanel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.extremesPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.extremesTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+}
+
+.extremesControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.extremesRangeGroup {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.extremesRangeBtn {
+  padding: 4px 10px;
+  background: #fff;
+  border: none;
+  border-right: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 11px;
+  color: #555;
+  white-space: nowrap;
+}
+
+.extremesRangeBtn:last-child { border-right: none; }
+.extremesRangeBtn:hover { background: #f5f5f5; }
+
+.extremesRangeBtnActive {
+  background: var(--p1);
+  color: #fff;
+}
+
+.extremesClassSelect {
+  padding: 4px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #444;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.extremesClassSelect:focus { border-color: var(--p1); }
+
+.extremesPagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  padding-top: 4px;
+}
+
+.extremesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .extremesGrid { grid-template-columns: 1fr; }
+}
+
+.extremesSubtitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+}
+
+.noCell {
+  width: 32px;
+  color: #aaa;
+  font-size: 11px;
+  text-align: center;
+}
+
+.miniTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.miniTable th {
+  text-align: left;
+  padding: 5px 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #aaa;
+  border-bottom: 1px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.miniTable td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #f7f7f7;
+  color: #444;
+}
+
+.miniTable tbody tr:last-child td { border-bottom: none; }
+.miniTable tbody tr { cursor: pointer; transition: background 0.1s; }
+.miniTable tbody tr:hover td { background: #f5fbf5; }
 
 /* ── States ──────────────────────────────────────────────────────────────── */
 
@@ -369,4 +508,66 @@
 .chartFilterBtnActive {
   background: var(--p1);
   color: #fff;
+}
+
+/* ── Passage performance table ───────────────────────────────────────────────── */
+
+.passageRow {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.passageRow:hover td {
+  background: #f5fbf5;
+}
+
+.passageRowSelected td {
+  background: #edf7ed;
+}
+
+.passageTitleCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.expandIcon {
+  font-size: 9px;
+  color: #bbb;
+  flex-shrink: 0;
+}
+
+.questionExpandRow td {
+  padding: 0 !important;
+}
+
+.questionExpandCell {
+  background: #f8faf8;
+  border-bottom: 2px solid #e8f0e8 !important;
+}
+
+.questionExpandCell .miniTable {
+  margin: 0;
+}
+
+.questionExpandScroll {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.questionExpandCell .miniTable td,
+.questionExpandCell .miniTable th {
+  padding: 6px 16px;
+}
+
+.questionExpandCell .miniTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.questionTextCell {
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

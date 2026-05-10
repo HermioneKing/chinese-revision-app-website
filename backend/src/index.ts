@@ -338,6 +338,86 @@ app.get('/api/students', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+// Paginated most/least active students, filterable by class
+app.get('/api/students/extremes', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const classId    = (req.query.class_id    as string) || 'all';
+    const range      = (req.query.range       as string) || 'all';
+    const topPage    = Math.max(1, parseInt((req.query.top_page    as string) || '1') || 1);
+    const bottomPage = Math.max(1, parseInt((req.query.bottom_page as string) || '1') || 1);
+    const limit      = 5;
+    const topOffset    = (topPage    - 1) * limit;
+    const bottomOffset = (bottomPage - 1) * limit;
+
+    const parsedClass = parseInt(classId);
+    const validClass  = !isNaN(parsedClass) && classId !== 'all';
+    const classJoin   = validClass ? 'JOIN student_personal_info spi ON spi.student_id = s.student_id' : '';
+    const classWhere  = validClass ? `AND spi.class_id = ${parsedClass}` : '';
+
+    const dateOnClause: Record<string, string> = {
+      '7':  "AND pr.tested_date >= NOW() - INTERVAL '7 days'",
+      '30': "AND pr.tested_date >= NOW() - INTERVAL '30 days'",
+      '90': "AND pr.tested_date >= NOW() - INTERVAL '90 days'",
+      'all': '',
+    };
+    const dateOn = dateOnClause[range] ?? '';
+
+    type ExtremeRow = {
+      student_id: number; username: string; nickname: string | null;
+      plan: string | null; questions_answered: bigint;
+    };
+    type CountRow = { total: bigint };
+
+    const baseQuery = (order: 'DESC' | 'ASC', offset: number) =>
+      `SELECT s.student_id, s.username, s.nickname, p.value AS plan,
+              count(pr.practice_record_id) AS questions_answered
+       FROM student s
+       LEFT JOIN plan            p  ON p.plan_id    = s.plan_id
+       LEFT JOIN practice_record pr ON pr.student_id = s.student_id ${dateOn}
+       ${classJoin}
+       WHERE 1=1 ${classWhere}
+       GROUP BY s.student_id, s.username, s.nickname, p.value
+       HAVING count(pr.practice_record_id) > 0
+       ORDER BY questions_answered ${order}, s.student_id ${order}
+       LIMIT ${limit} OFFSET ${offset}`;
+
+    const countQuery =
+      `SELECT count(*) AS total
+       FROM (
+         SELECT s.student_id
+         FROM student s
+         LEFT JOIN practice_record pr ON pr.student_id = s.student_id ${dateOn}
+         ${classJoin}
+         WHERE 1=1 ${classWhere}
+         GROUP BY s.student_id
+         HAVING count(pr.practice_record_id) > 0
+       ) sub`;
+
+    const [top, bottom, countRows] = await Promise.all([
+      prisma.$queryRawUnsafe<ExtremeRow[]>(baseQuery('DESC', topOffset)),
+      prisma.$queryRawUnsafe<ExtremeRow[]>(baseQuery('ASC',  bottomOffset)),
+      prisma.$queryRawUnsafe<CountRow[]>(countQuery),
+    ]);
+
+    const map = (r: ExtremeRow) => ({
+      student_id:         r.student_id,
+      username:           r.username,
+      nickname:           r.nickname,
+      plan:               r.plan,
+      questions_answered: Number(r.questions_answered),
+    });
+
+    res.json({
+      top:    top.map(map),
+      bottom: bottom.map(map),
+      total:  Number(countRows[0]?.total ?? 0),
+    });
+  } catch (error) {
+    console.error('Error fetching student extremes:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Student performance chart data (separate endpoint so chart filters don't reload the whole page)
 app.get('/api/students/:id/performance', authenticateToken, async (req: AuthRequest, res) => {
   try {
@@ -393,7 +473,7 @@ app.get('/api/students/:id', authenticateToken, async (req: AuthRequest, res) =>
     const studentId = parseInt(req.params.id);
     if (isNaN(studentId)) return res.status(400).json({ error: 'Invalid student ID' });
 
-    const [studentRows, history, dailyPerf, coverageRows] = await Promise.all([
+    const [studentRows, history, dailyPerf, coverageRows, statsRows] = await Promise.all([
       // Student info
       prisma.$queryRaw<Array<{
         student_id: number; username: string; nickname: string | null;
@@ -438,6 +518,13 @@ app.get('/api/students/:id', authenticateToken, async (req: AuthRequest, res) =>
            WHERE pr.student_id = ${studentId}) AS passages_attempted,
           (SELECT count(*) FROM passage)        AS total_passages
       `,
+      // Total time + last online
+      prisma.$queryRaw<Array<{ total_time: number; last_online: Date | null }>>`
+        SELECT COALESCE(SUM(duration), 0)::float8 AS total_time,
+               MAX(tested_date)                   AS last_online
+        FROM practice_record
+        WHERE student_id = ${studentId}
+      `,
     ]);
 
     if (studentRows.length === 0) return res.status(404).json({ error: 'Student not found' });
@@ -452,9 +539,105 @@ app.get('/api/students/:id', authenticateToken, async (req: AuthRequest, res) =>
       })),
       passages_attempted: Number(coverageRows[0].passages_attempted),
       total_passages: Number(coverageRows[0].total_passages),
+      total_time: Number(statsRows[0]?.total_time ?? 0),
+      last_online: statsRows[0]?.last_online ?? null,
     });
   } catch (error) {
     console.error('Error fetching student detail:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Passage performance for a student
+app.get('/api/students/:id/passages', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const studentId = parseInt(req.params.id);
+    if (isNaN(studentId)) return res.status(400).json({ error: 'Invalid student ID' });
+
+    const rows = await prisma.$queryRaw<Array<{
+      passage_id: number; title: string;
+      attempts: bigint; avg_wrong: number | null;
+      pct_perfect: number | null; total_time: number;
+    }>>`
+      SELECT p.passage_id,
+             p.title,
+             count(pr.practice_record_id) AS attempts,
+             ROUND(AVG(pr.wrong_count)::numeric, 2) AS avg_wrong,
+             ROUND(100.0 * count(CASE WHEN pr.wrong_count = 0 THEN 1 END)::numeric
+                         / NULLIF(count(pr.practice_record_id), 0), 1) AS pct_perfect,
+             COALESCE(SUM(pr.duration), 0)::float8 AS total_time
+      FROM practice_record pr
+      JOIN question_registry qr ON qr.question_id = pr.question_id
+      JOIN passage p ON p.passage_id = qr.passage_id
+      WHERE pr.student_id = ${studentId}
+      GROUP BY p.passage_id, p.title
+      ORDER BY avg_wrong DESC NULLS LAST, attempts DESC
+    `;
+
+    res.json(rows.map(r => ({
+      passage_id:  r.passage_id,
+      title:       r.title,
+      attempts:    Number(r.attempts),
+      avg_wrong:   r.avg_wrong  !== null ? Number(r.avg_wrong)  : null,
+      pct_perfect: r.pct_perfect !== null ? Number(r.pct_perfect) : null,
+      total_time:  Number(r.total_time),
+    })));
+  } catch (error) {
+    console.error('Error fetching student passages:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Question-level performance for a specific passage and student
+app.get('/api/students/:id/passages/:passage_id', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const studentId = parseInt(req.params.id);
+    const passageId = parseInt(req.params.passage_id);
+    if (isNaN(studentId) || isNaN(passageId)) return res.status(400).json({ error: 'Invalid ID' });
+
+    const rows = await prisma.$queryRaw<Array<{
+      question_id: string; type: string; question_text: string | null;
+      attempts: bigint; avg_wrong: number | null; pct_perfect: number | null;
+    }>>`
+      SELECT qr.question_id,
+             qr.type,
+             COALESCE(
+               mc.question,
+               w.value,
+               ss.value,
+               s.value,
+               pg.value,
+               tq.question
+             ) AS question_text,
+             count(pr.practice_record_id) AS attempts,
+             ROUND(AVG(pr.wrong_count)::numeric, 2) AS avg_wrong,
+             ROUND(100.0 * count(CASE WHEN pr.wrong_count = 0 THEN 1 END)::numeric
+                         / NULLIF(count(pr.practice_record_id), 0), 1) AS pct_perfect
+      FROM practice_record pr
+      JOIN question_registry qr ON qr.question_id = pr.question_id
+      LEFT JOIN multiple_choice      mc ON mc.question_id = qr.question_id
+      LEFT JOIN word                 w  ON w.question_id  = qr.question_id
+      LEFT JOIN short_sentence       ss ON ss.question_id = qr.question_id
+      LEFT JOIN sentence             s  ON s.question_id  = qr.question_id
+      LEFT JOIN paragraph            pg ON pg.question_id = qr.question_id
+      LEFT JOIN translation_question tq ON tq.question_id = qr.question_id
+      WHERE pr.student_id = ${studentId}
+        AND qr.passage_id = ${passageId}
+      GROUP BY qr.question_id, qr.type,
+               mc.question, w.value, ss.value, s.value, pg.value, tq.question
+      ORDER BY avg_wrong DESC NULLS LAST, attempts DESC
+    `;
+
+    res.json(rows.map(r => ({
+      question_id:   r.question_id,
+      type:          r.type,
+      question_text: r.question_text,
+      attempts:      Number(r.attempts),
+      avg_wrong:     r.avg_wrong   !== null ? Number(r.avg_wrong)   : null,
+      pct_perfect:   r.pct_perfect !== null ? Number(r.pct_perfect) : null,
+    })));
+  } catch (error) {
+    console.error('Error fetching question performance:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -612,6 +795,12 @@ app.get('/api/analytics', authenticateToken, async (req: AuthRequest, res) => {
     const passageWhere  = (!isNaN(parsedPassage) && passageId !== 'all')
       ? `AND p.passage_id = ${parsedPassage}` : '';
 
+    const classId    = (req.query.class_id as string) || 'all';
+    const parsedClass = parseInt(classId);
+    const validClass  = !isNaN(parsedClass) && classId !== 'all';
+    const classJoin   = validClass ? 'JOIN student_personal_info spi ON spi.student_id = s.student_id' : '';
+    const classWhere  = validClass ? `AND spi.class_id = ${parsedClass}` : '';
+
     const [passages, questionTypes, dayOfWeek, hourOfDay] = await Promise.all([
 
       // 1. Per-passage stats
@@ -630,7 +819,9 @@ app.get('/api/analytics', authenticateToken, async (req: AuthRequest, res) => {
          FROM practice_record pr
          JOIN question_registry qr ON qr.question_id = pr.question_id
          JOIN passage            p  ON p.passage_id   = qr.passage_id
-         WHERE ${dateWhere} ${passageWhere}
+         JOIN student            s  ON s.student_id   = pr.student_id
+         ${classJoin}
+         WHERE ${dateWhere} ${passageWhere} ${classWhere}
          GROUP BY p.passage_id, p.title, p.author
          ORDER BY attempts DESC`
       ),
@@ -645,7 +836,9 @@ app.get('/api/analytics', authenticateToken, async (req: AuthRequest, res) => {
          FROM practice_record pr
          JOIN question_registry qr ON qr.question_id = pr.question_id
          JOIN passage            p  ON p.passage_id   = qr.passage_id
-         WHERE ${dateWhere} ${passageWhere}
+         JOIN student            s  ON s.student_id   = pr.student_id
+         ${classJoin}
+         WHERE ${dateWhere} ${passageWhere} ${classWhere}
          GROUP BY qr.type
          ORDER BY avg_wrong DESC NULLS LAST`
       ),
@@ -657,7 +850,9 @@ app.get('/api/analytics', authenticateToken, async (req: AuthRequest, res) => {
          FROM practice_record pr
          JOIN question_registry qr ON qr.question_id = pr.question_id
          JOIN passage            p  ON p.passage_id   = qr.passage_id
-         WHERE ${dateWhere} ${passageWhere}
+         JOIN student            s  ON s.student_id   = pr.student_id
+         ${classJoin}
+         WHERE ${dateWhere} ${passageWhere} ${classWhere}
          GROUP BY dow
          ORDER BY dow`
       ),
@@ -669,7 +864,9 @@ app.get('/api/analytics', authenticateToken, async (req: AuthRequest, res) => {
          FROM practice_record pr
          JOIN question_registry qr ON qr.question_id = pr.question_id
          JOIN passage            p  ON p.passage_id   = qr.passage_id
-         WHERE ${dateWhere} ${passageWhere}
+         JOIN student            s  ON s.student_id   = pr.student_id
+         ${classJoin}
+         WHERE ${dateWhere} ${passageWhere} ${classWhere}
          GROUP BY hour
          ORDER BY hour`
       ),
@@ -716,6 +913,18 @@ app.get('/api/analytics/passages', authenticateToken, async (_req: AuthRequest, 
       SELECT passage_id, title, author FROM passage ORDER BY passage_id
     `;
     res.json(passages);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Class list for analytics class filter
+app.get('/api/analytics/classes', authenticateToken, async (_req: AuthRequest, res) => {
+  try {
+    const classes = await prisma.$queryRaw<Array<{ class_id: number; value: string; grade: number }>>`
+      SELECT class_id, value, grade FROM class ORDER BY grade, value
+    `;
+    res.json(classes);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -820,6 +1029,50 @@ app.get('/api/dashboard/top-passages', authenticateToken, async (_req: AuthReque
     })));
   } catch (error) {
     console.error('Error fetching top passages:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Top 20 questions with lowest accuracy, filterable by passage
+app.get('/api/dashboard/question-accuracy', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const passageId     = (req.query.passage_id as string) || 'all';
+    const parsedPassage = parseInt(passageId);
+    const passageWhere  = (!isNaN(parsedPassage) && passageId !== 'all')
+      ? `AND p.passage_id = ${parsedPassage}` : '';
+
+    const rows = await prisma.$queryRawUnsafe<Array<{
+      question_id: string; type: string;
+      passage_id: number; passage_title: string;
+      attempts: bigint; avg_wrong: number | null; pct_perfect: number | null;
+    }>>(
+      `SELECT qr.question_id, qr.type,
+              p.passage_id, p.title AS passage_title,
+              count(pr.practice_record_id)                                       AS attempts,
+              ROUND(AVG(pr.wrong_count)::numeric, 2)                            AS avg_wrong,
+              ROUND(100.0 * count(CASE WHEN pr.wrong_count = 0 THEN 1 END)
+                    / NULLIF(count(*), 0), 1)                                   AS pct_perfect
+       FROM practice_record pr
+       JOIN question_registry qr ON qr.question_id = pr.question_id
+       JOIN passage            p  ON p.passage_id   = qr.passage_id
+       WHERE 1=1 ${passageWhere}
+       GROUP BY qr.question_id, qr.type, p.passage_id, p.title
+       HAVING count(pr.practice_record_id) >= 5
+       ORDER BY pct_perfect ASC NULLS LAST, avg_wrong DESC NULLS LAST
+       LIMIT 20`
+    );
+
+    res.json(rows.map(r => ({
+      question_id:   r.question_id,
+      type:          r.type,
+      passage_id:    r.passage_id,
+      passage_title: r.passage_title,
+      attempts:      Number(r.attempts),
+      avg_wrong:     r.avg_wrong   !== null ? Number(r.avg_wrong)   : null,
+      pct_perfect:   r.pct_perfect !== null ? Number(r.pct_perfect) : null,
+    })));
+  } catch (error) {
+    console.error('Error fetching question accuracy:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

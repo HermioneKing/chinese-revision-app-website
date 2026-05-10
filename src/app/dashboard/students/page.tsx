@@ -5,6 +5,16 @@ import { useRouter } from 'next/navigation';
 import { apiGet } from '@/lib/api';
 import styles from './students.module.css';
 
+interface ExtremeStudent {
+  student_id: number;
+  username: string;
+  nickname: string | null;
+  plan: string | null;
+  questions_answered: number;
+}
+
+interface ClassOption { class_id: number; value: string; grade: number; }
+
 interface Student {
   student_id: number;
   username: string;
@@ -43,13 +53,48 @@ const COLUMNS: { key: SortKey; label: string }[] = [
 
 export default function StudentsPage() {
   const router = useRouter();
-  const [data, setData]       = useState<StudentsResponse | null>(null);
-  const [search, setSearch]   = useState('');
-  const [page, setPage]       = useState(1);
-  const [sortKey, setSortKey] = useState<SortKey>('total_sessions');
+  const [data, setData]           = useState<StudentsResponse | null>(null);
+  const [search, setSearch]       = useState('');
+  const [page, setPage]           = useState(1);
+  const [sortKey, setSortKey]     = useState<SortKey>('total_sessions');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState<string | null>(null);
+
+  const [extremes, setExtremes]               = useState<{ top: ExtremeStudent[]; bottom: ExtremeStudent[]; total: number } | null>(null);
+  const [extremesLoading, setExtremesLoading] = useState(true);
+  const [extremesError, setExtremesError]     = useState(false);
+  const [extremesClasses, setExtremesClasses]       = useState<ClassOption[]>([]);
+  const [extremesClassId, setExtremesClassId]       = useState('all');
+  const [extremesRange, setExtremesRange]           = useState('all');
+  const [extremesTopPage, setExtremesTopPage]       = useState(1);
+  const [extremesBottomPage, setExtremesBottomPage] = useState(1);
+
+  useEffect(() => {
+    apiGet('/analytics/classes')
+      .then(r => r.ok ? r.json() : [])
+      .then(setExtremesClasses)
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    setExtremesLoading(true);
+    setExtremesError(false);
+    const params = new URLSearchParams({
+      class_id:    extremesClassId,
+      range:       extremesRange,
+      top_page:    String(extremesTopPage),
+      bottom_page: String(extremesBottomPage),
+    });
+    apiGet(`/students/extremes?${params}`)
+      .then(r => {
+        if (!r.ok) { setExtremesError(true); return null; }
+        return r.json();
+      })
+      .then(d => { if (d) setExtremes(d); })
+      .catch(() => setExtremesError(true))
+      .finally(() => setExtremesLoading(false));
+  }, [extremesClassId, extremesRange, extremesTopPage, extremesBottomPage]);
 
   const fetchStudents = useCallback(async (
     q: string, p: number, sort: SortKey, order: SortOrder
@@ -108,6 +153,80 @@ export default function StudentsPage() {
   return (
     <div className={styles.page}>
       <h1 className={styles.pageTitle}>Students</h1>
+
+      {/* Usage overview */}
+      <div className={styles.extremesPanel}>
+        <div className={styles.extremesPanelHeader}>
+          <h2 className={styles.extremesTitle}>Usage overview</h2>
+          <div className={styles.extremesControls}>
+            <div className={styles.extremesRangeGroup}>
+              {([['7','Last 7d'],['30','Last 30d'],['90','Last 90d'],['all','All time']] as [string,string][]).map(([val, label]) => (
+                <button
+                  key={val}
+                  className={`${styles.extremesRangeBtn} ${extremesRange === val ? styles.extremesRangeBtnActive : ''}`}
+                  onClick={() => { setExtremesRange(val); setExtremesTopPage(1); setExtremesBottomPage(1); }}
+                >{label}</button>
+              ))}
+            </div>
+            <select
+              className={styles.extremesClassSelect}
+              value={extremesClassId}
+              onChange={e => { setExtremesClassId(e.target.value); setExtremesTopPage(1); setExtremesBottomPage(1); }}
+            >
+              <option value="all">All classes</option>
+              {extremesClasses.map(c => (
+                <option key={c.class_id} value={String(c.class_id)}>F.{c.grade} {c.value}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {extremesLoading && extremes === null && <p className={styles.loading}>Loading…</p>}
+        {!extremesLoading && extremesError && extremes === null && <p className={styles.error}>Could not load usage overview.</p>}
+        {extremes && (() => {
+          const totalPages = Math.ceil(extremes.total / 5);
+          const renderTable = (list: ExtremeStudent[], rankBase: number) => (
+            <table className={styles.miniTable} style={{ opacity: extremesLoading ? 0.4 : 1, transition: 'opacity 0.15s' }}>
+              <thead>
+                <tr><th className={styles.noCell}>No.</th><th>Student</th><th>Questions</th></tr>
+              </thead>
+              <tbody>
+                {list.map((s, i) => (
+                  <tr key={s.student_id} onClick={() => router.push(`/dashboard/students/${s.student_id}`)}>
+                    <td className={styles.noCell}>{rankBase + i + 1}</td>
+                    <td className={styles.usernameCell}>
+                      {s.nickname ? `${s.nickname} (${s.username})` : s.username}
+                    </td>
+                    <td>{s.questions_answered.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          );
+          const renderPagination = (currentPage: number, setPage: (fn: (p: number) => number) => void) =>
+            totalPages > 1 && (
+              <div className={styles.extremesPagination}>
+                <button className={styles.pageBtn} onClick={() => setPage(p => p - 1)} disabled={currentPage === 1}>← Prev</button>
+                <span className={styles.pageInfo}>Page {currentPage} of {totalPages}</span>
+                <button className={styles.pageBtn} onClick={() => setPage(p => p + 1)} disabled={currentPage >= totalPages}>Next →</button>
+              </div>
+            );
+          return (
+            <div className={styles.extremesGrid}>
+              <div>
+                <p className={styles.extremesSubtitle}>Most active students</p>
+                {renderTable(extremes.top, (extremesTopPage - 1) * 5)}
+                {renderPagination(extremesTopPage, setExtremesTopPage)}
+              </div>
+              <div>
+                <p className={styles.extremesSubtitle}>Least active students</p>
+                {renderTable(extremes.bottom, (extremesBottomPage - 1) * 5)}
+                {renderPagination(extremesBottomPage, setExtremesBottomPage)}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
 
       <div className={styles.toolbar}>
         <input
