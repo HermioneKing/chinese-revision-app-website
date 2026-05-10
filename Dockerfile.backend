@@ -14,7 +14,7 @@ COPY backend/tsconfig.json ./
 RUN npx prisma generate
 RUN npm run build
 
-EXPOSE 5003
+EXPOSE 5007
 
 ENV NODE_ENV production
 

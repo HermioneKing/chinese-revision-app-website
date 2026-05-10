@@ -7,22 +7,22 @@ services:
       dockerfile: Dockerfile.frontend
       args:
         # Same host your browser uses; 127.0.0.1 only works when the browser runs on the Docker host.
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5003/api}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5007/api}
     ports:
-      - "3003:3000"
+      - "3007:3000"
     volumes:
       - .:/app
       - /app/node_modules # Exclude node_modules from host mount
     environment:
       - NODE_ENV=development
-      # Override root .env PORT=5003 (backend); Next must listen on container port 3000 (see ports 3003:3000).
+      # Override root .env PORT (backend); Next must listen on container port 3000 (see ports 3007:3000).
       - PORT=3000
       # Browser calls this URL from the client machine (not from inside Docker).
-      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5003/api}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5007/api}
       # RSC/server fetches from inside Docker network:
-      - SERVER_API_BASE_URL=http://backend:5003/api
+      - SERVER_API_BASE_URL=http://backend:5007/api
       # Browser can use origin /api/... rewrite when NEXT_PUBLIC_API_BASE_URL is empty:
-      - NEXT_BACKEND_ORIGIN=http://backend:5003
+      - NEXT_BACKEND_ORIGIN=http://backend:5007
     env_file: .env
     depends_on:
       - backend
@@ -32,11 +32,12 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5003:5003"
+      - "5007:5007"
     volumes:
       - /app/backend/node_modules # Exclude backend node_modules from host mount
     environment:
       - NODE_ENV=development
+      - PORT=5007
       - JWT_SECRET=${JWT_SECRET}
       # Postgres from /root/database/docker-compose.yml — service `postgres`, port 5432 inside Docker.
       # Shared network name is fixed (`dse_revision_db`) so this repo works on any machine after DB stack is up.

@@ -17,7 +17,7 @@ COPY eslint.config.mjs ./
 
 # NEXT_PUBLIC_* must exist when `next build` runs (prerender imports src/lib/api.ts).
 # Override at image build: docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://example.com/api
-ARG NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:5003/api
+ARG NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:5007/api
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 # Build the Next.js application
