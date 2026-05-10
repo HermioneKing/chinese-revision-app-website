@@ -6,6 +6,7 @@ import {
   CategoryScale, LinearScale,
   BarElement, Tooltip, Legend,
 } from 'chart.js';
+import type { TooltipItem } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { apiGet } from '@/lib/api';
 import { usePalette } from '@/context/PaletteContext';
@@ -256,11 +257,12 @@ export default function LearningAnalyticsPage() {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx: { parsed: { x: number }; dataIndex: number }) => {
+          label: (ctx: TooltipItem<'bar'>) => {
             const p = passageChartItems[ctx.dataIndex];
+            const x = ctx.parsed.x;
             if (passageMetric === 'avg_duration') return ` ${fmtDuration(p.avg_duration)}`;
-            if (passageMetric === 'pct_perfect')  return ` ${ctx.parsed.x}%`;
-            return ` ${ctx.parsed.x}`;
+            if (passageMetric === 'pct_perfect')  return x === null ? ' —' : ` ${x}%`;
+            return x === null ? ' —' : ` ${x}`;
           },
         },
       },
