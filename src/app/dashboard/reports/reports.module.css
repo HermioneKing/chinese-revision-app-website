@@ -7,7 +7,8 @@
 .pageTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -22,69 +23,79 @@
 
 .rangeGroup {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
   overflow: hidden;
+  background: var(--color-cloud-white);
 }
 
 .rangeBtn {
-  padding: 6px 14px;
-  background: #fff;
+  padding: 7px 14px;
+  background: transparent;
   border: none;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--color-skyline-gray);
   cursor: pointer;
   font-size: 13px;
-  color: #555;
+  font-weight: 500;
+  color: var(--color-mist-gray);
+  font-family: inherit;
+  transition: background 0.1s, color 0.1s;
 }
 
 .rangeBtn:last-child { border-right: none; }
-.rangeBtn:hover { background: #f5f5f5; }
+.rangeBtn:hover { background: var(--color-horizon-gray); color: var(--color-inkwell); }
 
 .rangeBtnActive {
-  background: var(--p1);
-  color: #fff;
+  background: var(--color-electric-blue);
+  color: #ffffff;
 }
 
 .planGroup {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
   overflow: hidden;
+  background: var(--color-cloud-white);
 }
 
 .planBtn {
-  padding: 6px 14px;
-  background: #fff;
+  padding: 7px 14px;
+  background: transparent;
   border: none;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--color-skyline-gray);
   cursor: pointer;
   font-size: 13px;
-  color: #555;
+  font-weight: 500;
+  color: var(--color-mist-gray);
   text-transform: capitalize;
+  font-family: inherit;
+  transition: background 0.1s, color 0.1s;
 }
 
 .planBtn:last-child { border-right: none; }
-.planBtn:hover { background: #f5f5f5; }
+.planBtn:hover { background: var(--color-horizon-gray); color: var(--color-inkwell); }
 
 .planBtnActive {
-  background: var(--p6);
-  color: #fff;
+  background: var(--color-electric-blue);
+  color: #ffffff;
 }
 
 .printBtn {
   margin-left: auto;
-  padding: 7px 18px;
-  background: var(--p1);
-  color: #fff;
+  padding: 8px 20px;
+  background: var(--color-electric-blue);
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-buttons);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
 }
 
-.printBtn:hover { opacity: 0.9; }
-.printBtn:disabled { opacity: 0.5; cursor: default; }
+.printBtn:hover { background: var(--color-deep-royal); }
+.printBtn:disabled { opacity: 0.45; cursor: default; }
 
 /* ── Two-column grid ─────────────────────────────────────────────────────── */
 
@@ -99,10 +110,10 @@
 /* ── Report panel ────────────────────────────────────────────────────────── */
 
 .panel {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  background: var(--color-cloud-white);
+  border-radius: var(--radius-cards);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -111,10 +122,10 @@
 .panelTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-inkwell);
   margin: 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-skyline-gray);
 }
 
 /* ── Preview table ───────────────────────────────────────────────────────── */
@@ -122,50 +133,51 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .table th {
   text-align: left;
   padding: 6px 8px;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #aaa;
-  border-bottom: 1px solid #f0f0f0;
+  letter-spacing: 0.05em;
+  color: var(--color-mist-gray);
+  border-bottom: 1px solid var(--color-skyline-gray);
   white-space: nowrap;
 }
 
 .table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid #f7f7f7;
-  color: #444;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--color-skyline-gray);
+  color: var(--color-inkwell);
 }
 
 .table tbody tr:last-child td { border-bottom: none; }
 
-.rankCell { color: #aaa; font-size: 11px; width: 24px; }
-.nameCell { font-weight: 600; color: #333; }
-.goodNum  { color: var(--p2); font-weight: 600; }
+.rankCell { color: var(--color-mist-gray); font-size: 11px; width: 24px; }
+.nameCell { font-weight: 600; color: var(--color-inkwell); }
+.goodNum  { color: var(--color-mint-green); font-weight: 600; }
 .badNum   { color: var(--p4); font-weight: 600; }
 
 .planBadge {
   display: inline-block;
-  padding: 1px 6px;
-  border-radius: 8px;
-  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: capitalize;
 }
 
-.planFree    { background: #f0f0f0; color: #666; }
-.planPremium { background: #fff3cd; color: #856404; }
+.planFree    { background: var(--color-skyline-gray); color: var(--color-mist-gray); }
+.planPremium { background: var(--color-periwinkle); color: var(--color-deep-royal); }
 
 /* ── States ──────────────────────────────────────────────────────────────── */
 
 .loading {
   font-size: 13px;
-  color: #aaa;
+  color: var(--color-mist-gray);
   padding: 40px;
   text-align: center;
 }
@@ -179,6 +191,6 @@
 
 .note {
   font-size: 11px;
-  color: #bbb;
+  color: var(--color-mist-gray);
   text-align: right;
 }

@@ -1,38 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Design tokens (DESIGN.md — Dock system) ── */
+  --color-inkwell:      #121722;
+  --color-cloud-white:  #ffffff;
+  --color-horizon-gray: #faf9f7;
+  --color-skyline-gray: #efefef;
+  --color-mist-gray:    #a5a5a5;
+  --color-electric-blue:#0068f9;
+  --color-deep-royal:   #024bb1;
+  --color-lavender-mist:#f4f0ff;
+  --color-mint-green:   #046645;
+  --color-periwinkle:   #d5ecff;
 
-  /* ============================================================
-   * COLOUR PALETTE — mirror of src/lib/palette.ts
-   * Change colours in palette.ts first, then update here too.
-   * ============================================================ */
-  --p1: #4A90A4; /* teal blue   — primary accent      */
-  --p2: #7CB87A; /* green       — positive / active    */
-  --p3: #E8A838; /* amber       — warnings / attention */
-  --p4: #D96B6B; /* coral red   — errors / negative    */
-  --p5: #9B7EC8; /* lavender    — chart series 5       */
-  --p6: #6B9EC8; /* steel blue  — chart series 6       */
+  --shadow-subtle: rgba(0,0,0,0.07) 0px 1px 1px 0px,
+                   rgba(0,0,0,0.04) 0px -1px 1px 0px inset,
+                   rgba(0,0,0,0.14) 0px 0px 0px 0.5px inset;
+  --shadow-lg: rgba(0,0,0,0.04) 0px 20px 20px -8px;
+
+  --radius-cards:   16px;
+  --radius-buttons: 48px;
+
+  /* ── Chart palette (user-selectable via PaletteContext) ── */
+  --p1: #4A90A4;
+  --p2: #7CB87A;
+  --p3: #E8A838;
+  --p4: #D96B6B;
+  --p5: #9B7EC8;
+  --p6: #6B9EC8;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: var(--color-horizon-gray);
+  --color-foreground: var(--color-inkwell);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
+  background: var(--color-horizon-gray);
+  color: var(--color-inkwell);
+  font-family: 'Roobert', ui-sans-serif, system-ui, -apple-system,
+               BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

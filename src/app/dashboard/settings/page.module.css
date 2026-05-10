@@ -8,17 +8,18 @@
 .pageTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 /* ── Card ────────────────────────────────────────────────────────────────── */
 
 .card {
-  background: #fff;
-  border-radius: 10px;
+  background: var(--color-cloud-white);
+  border-radius: var(--radius-cards);
   padding: 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -27,10 +28,11 @@
 .cardTitle {
   font-size: 15px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
   margin: 0;
   padding-bottom: 14px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-skyline-gray);
+  letter-spacing: -0.01em;
 }
 
 /* ── Profile header ──────────────────────────────────────────────────────── */
@@ -45,8 +47,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: var(--p1);
-  color: #fff;
+  background: var(--color-electric-blue);
+  color: #ffffff;
   font-size: 26px;
   font-weight: 700;
   display: flex;
@@ -64,12 +66,12 @@
 .avatarName {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-inkwell);
 }
 
 .avatarSub {
   font-size: 12px;
-  color: #999;
+  color: var(--color-mist-gray);
 }
 
 /* ── Form ────────────────────────────────────────────────────────────────── */
@@ -98,31 +100,33 @@
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #888;
+  letter-spacing: 0.06em;
+  color: var(--color-mist-gray);
 }
 
 .input,
 .select {
-  padding: 8px 11px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #333;
-  background: #fff;
+  padding: 9px 12px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--color-inkwell);
+  background: var(--color-cloud-white);
   width: 100%;
   outline: none;
-  transition: border-color 0.15s;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .input:focus,
 .select:focus {
-  border-color: var(--p1);
+  border-color: var(--color-electric-blue);
+  box-shadow: 0 0 0 3px rgba(0, 104, 249, 0.1);
 }
 
 .inputReadonly {
-  background: #f7f7f7;
-  color: #888;
+  background: var(--color-horizon-gray);
+  color: var(--color-mist-gray);
   cursor: default;
 }
 
@@ -135,24 +139,26 @@
 }
 
 .btnPrimary {
-  padding: 8px 20px;
-  background: var(--p1);
-  color: #fff;
+  padding: 9px 22px;
+  background: var(--color-electric-blue);
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: var(--radius-buttons);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
 }
 
-.btnPrimary:hover   { opacity: 0.9; }
-.btnPrimary:disabled { opacity: 0.5; cursor: default; }
+.btnPrimary:hover    { background: var(--color-deep-royal); }
+.btnPrimary:disabled { opacity: 0.45; cursor: default; }
 
 /* ── Feedback messages ───────────────────────────────────────────────────── */
 
 .successMsg {
   font-size: 13px;
-  color: var(--p2);
+  color: var(--color-mint-green);
   font-weight: 600;
 }
 
@@ -178,15 +184,16 @@
 }
 
 .aboutLabel {
-  color: #aaa;
+  color: var(--color-mist-gray);
   min-width: 110px;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .aboutValue {
-  color: #333;
+  color: var(--color-inkwell);
   font-weight: 500;
 }
 
@@ -194,7 +201,7 @@
 
 .loading {
   font-size: 13px;
-  color: #aaa;
+  color: var(--color-mist-gray);
   padding: 30px 0;
   text-align: center;
 }

@@ -7,7 +7,8 @@
 .pageTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -20,33 +21,35 @@
 }
 
 .statCard {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px 20px;
-  border-left: 5px solid var(--card-accent, var(--p1));
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--color-cloud-white);
+  border-radius: var(--radius-cards);
+  padding: 20px 20px 18px;
+  border-left: 4px solid var(--card-accent, var(--color-electric-blue));
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .statLabel {
-  font-size: 12px;
-  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-mist-gray);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .statValue {
   font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
   line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .statSub {
   font-size: 11px;
-  color: #aaa;
+  color: var(--color-mist-gray);
 }
 
 /* ── Two-column section ──────────────────────────────────────────────────── */
@@ -58,18 +61,16 @@
 }
 
 @media (max-width: 720px) {
-  .twoCol {
-    grid-template-columns: 1fr;
-  }
+  .twoCol { grid-template-columns: 1fr; }
 }
 
 /* ── Shared panel ────────────────────────────────────────────────────────── */
 
 .panel {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--color-cloud-white);
+  border-radius: var(--radius-cards);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -78,10 +79,10 @@
 .panelTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-inkwell);
   margin: 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-skyline-gray);
 }
 
 /* ── Activity feed ───────────────────────────────────────────────────────── */
@@ -101,7 +102,7 @@
   font-size: 13px;
   color: #444;
   padding-bottom: 8px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--color-skyline-gray);
 }
 
 .activityRow:last-child {
@@ -110,10 +111,10 @@
 }
 
 .activityDot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--p1);
+  background: var(--color-electric-blue);
   flex-shrink: 0;
   margin-top: 4px;
 }
@@ -127,11 +128,11 @@
 
 .activityStudent {
   font-weight: 600;
-  color: #333;
+  color: var(--color-inkwell);
 }
 
 .activityMeta {
-  color: #888;
+  color: var(--color-mist-gray);
   font-size: 12px;
 }
 
@@ -143,14 +144,71 @@
 }
 
 .activityWrongZero {
-  color: var(--p2);
+  color: var(--color-mint-green);
 }
+
+/* ── Panel header (title + inline filter) ────────────────────────────────── */
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-skyline-gray);
+}
+
+/* ── Question accuracy table ─────────────────────────────────────────────── */
+
+.qaSelect {
+  padding: 5px 10px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--color-inkwell);
+  background: var(--color-cloud-white);
+  cursor: pointer;
+  max-width: 220px;
+  outline: none;
+  font-family: inherit;
+}
+
+.qaSelect:focus { border-color: var(--color-electric-blue); }
+
+.qaTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.qaTable th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-mist-gray);
+  border-bottom: 1px solid var(--color-skyline-gray);
+  white-space: nowrap;
+}
+
+.qaTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-skyline-gray);
+  color: var(--color-inkwell);
+}
+
+.qaTable tbody tr:last-child td { border-bottom: none; }
+
+.goodNum { color: var(--color-mint-green); font-weight: 600; }
+.badNum  { color: var(--p4); font-weight: 600; }
 
 /* ── Loading / error states ──────────────────────────────────────────────── */
 
 .loading {
   font-size: 13px;
-  color: #aaa;
+  color: var(--color-mist-gray);
   padding: 20px 0;
   text-align: center;
 }

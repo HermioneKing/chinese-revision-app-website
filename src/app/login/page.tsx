@@ -38,48 +38,39 @@ const LoginPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.leftPanel}>
+      <div className={styles.card}>
+        <div className={styles.logoArea}>
+          <p className={styles.logoTitle}>DSE Chinese</p>
+          <p className={styles.logoSub}>Teacher Dashboard</p>
+        </div>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="username" className={styles.label}>
-              Username:
-            </label>
+            <label htmlFor="username" className={styles.label}>Username</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={styles.input}
+              placeholder="Enter your username"
               required
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>
-              Password:
-            </label>
+            <label htmlFor="password" className={styles.label}>Password</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={styles.input}
+              placeholder="Enter your password"
               required
             />
           </div>
           {error && <div className={styles.error}>{error}</div>}
-          <button type="submit" className={styles.button}>
-            Sign In
-          </button>
+          <button type="submit" className={styles.button}>Sign In</button>
         </form>
-      </div>
-      <div className={styles.rightPanel}>
-        <Image
-          src="/background_1.jpg"
-          alt="Background"
-          fill
-          className={styles.backgroundImage}
-          priority
-        />
       </div>
     </div>
   );

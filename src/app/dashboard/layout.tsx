@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import styles from './layout.module.css';
 import { logout } from '@/lib/auth';
 import { PaletteProvider } from '@/context/PaletteContext';
@@ -10,6 +10,7 @@ import PalettePicker from '@/components/PalettePicker';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [isAccountMenuVisible, setAccountMenuVisible] = useState(false);
   const [isAlertsMenuVisible, setAlertsMenuVisible] = useState(false);
@@ -91,15 +92,29 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <PaletteProvider>
     <div className={styles.layout}>
       <aside className={`${styles.sidebar} ${isSidebarVisible ? styles.sidebarVisible : ''}`}>
+        <div className={styles.sidebarLogo}>
+          <Link href="/dashboard" onClick={handleSidebarLinkClick} className={styles.sidebarLogoLink}>
+            DSE Chinese
+          </Link>
+        </div>
         <nav>
           <ul>
-            {navItems.map((item) => (
-              <li key={item.path}>
-                <Link href={item.path} onClick={handleSidebarLinkClick}>
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.path === '/dashboard'
+                ? pathname === '/dashboard'
+                : pathname.startsWith(item.path);
+              return (
+                <li key={item.path}>
+                  <Link
+                    href={item.path}
+                    onClick={handleSidebarLinkClick}
+                    className={isActive ? styles.navLinkActive : styles.navLink}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>

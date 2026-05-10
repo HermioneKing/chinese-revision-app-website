@@ -7,7 +7,8 @@
 .pageTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-inkwell);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -22,64 +23,61 @@
 
 .rangeGroup {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
   overflow: hidden;
+  background: var(--color-cloud-white);
 }
 
 .rangeBtn {
-  padding: 6px 14px;
-  background: #fff;
+  padding: 7px 14px;
+  background: transparent;
   border: none;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--color-skyline-gray);
   cursor: pointer;
   font-size: 13px;
-  color: #555;
+  font-weight: 500;
+  color: var(--color-mist-gray);
+  font-family: inherit;
   transition: background 0.1s, color 0.1s;
 }
 
-.rangeBtn:last-child {
-  border-right: none;
-}
-
-.rangeBtn:hover {
-  background: #f5f5f5;
-}
+.rangeBtn:last-child { border-right: none; }
+.rangeBtn:hover { background: var(--color-horizon-gray); color: var(--color-inkwell); }
 
 .rangeBtnActive {
-  background: var(--p1);
-  color: #fff;
+  background: var(--color-electric-blue);
+  color: #ffffff;
 }
 
 .passageSelect {
-  padding: 6px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
   font-size: 13px;
-  color: #444;
-  background: #fff;
+  color: var(--color-inkwell);
+  background: var(--color-cloud-white);
   cursor: pointer;
   max-width: 280px;
   outline: none;
+  font-family: inherit;
 }
 
-.passageSelect:focus {
-  border-color: var(--p1);
-}
+.passageSelect:focus { border-color: var(--color-electric-blue); }
 
 .filterLabel {
   font-size: 12px;
-  color: #aaa;
+  color: var(--color-mist-gray);
   margin-left: auto;
 }
 
 /* ── Shared panel ────────────────────────────────────────────────────────── */
 
 .panel {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  background: var(--color-cloud-white);
+  border-radius: var(--radius-cards);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -89,14 +87,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-skyline-gray);
 }
 
 .panelTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-inkwell);
   margin: 0;
 }
 
@@ -104,27 +102,31 @@
 
 .toggleGroup {
   display: flex;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid var(--color-skyline-gray);
+  border-radius: 10px;
   overflow: hidden;
+  background: var(--color-cloud-white);
 }
 
 .toggleBtn {
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 12px;
-  background: #fff;
+  font-weight: 500;
+  background: transparent;
   border: none;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--color-skyline-gray);
   cursor: pointer;
-  color: #555;
+  color: var(--color-mist-gray);
+  font-family: inherit;
+  transition: background 0.1s, color 0.1s;
 }
 
 .toggleBtn:last-child { border-right: none; }
-.toggleBtn:hover { background: #f5f5f5; }
+.toggleBtn:hover { background: var(--color-horizon-gray); color: var(--color-inkwell); }
 
 .toggleBtnActive {
-  background: var(--p1);
-  color: #fff;
+  background: var(--color-electric-blue);
+  color: #ffffff;
 }
 
 /* ── Two-column grid ─────────────────────────────────────────────────────── */
@@ -155,46 +157,86 @@
   text-align: left;
   padding: 8px 12px;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #888;
-  border-bottom: 1px solid #f0f0f0;
+  letter-spacing: 0.05em;
+  color: var(--color-mist-gray);
+  border-bottom: 1px solid var(--color-skyline-gray);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
 }
 
-.table th:hover { color: #555; }
+.table th:hover { color: var(--color-inkwell); }
 
-.activeHeader { color: var(--p1); }
+.activeHeader { color: var(--color-electric-blue); }
 
 .sortIcon { margin-left: 3px; opacity: 0.4; font-size: 10px; }
-.sortActive { opacity: 1; color: var(--p1); }
+.sortActive { opacity: 1; color: var(--color-electric-blue); }
 
 .table td {
   padding: 8px 12px;
-  border-bottom: 1px solid #f7f7f7;
-  color: #444;
+  border-bottom: 1px solid var(--color-skyline-gray);
+  color: var(--color-inkwell);
 }
 
 .table tbody tr:last-child td { border-bottom: none; }
 
 .passageTitle {
   font-weight: 600;
-  color: #333;
+  color: var(--color-inkwell);
 }
 
-.authorCell { color: #888; font-size: 12px; }
+.authorCell { color: var(--color-mist-gray); font-size: 12px; }
 
-.goodNum  { color: var(--p2); font-weight: 600; }
+.goodNum  { color: var(--color-mint-green); font-weight: 600; }
 .warnNum  { color: var(--p3); font-weight: 600; }
 .badNum   { color: var(--p4); font-weight: 600; }
+
+/* ── Column hint (?) badge ───────────────────────────────────────────────── */
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-skyline-gray);
+  color: var(--color-mist-gray);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: default;
+  margin-left: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+
+.hint:hover { background: #d8d8d8; }
+
+/* Fixed-position tooltip rendered at page root to avoid table overflow clipping */
+.tooltipFixed {
+  position: fixed;
+  transform: translate(-30%, -100%);
+  background: var(--color-inkwell);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+}
 
 /* ── States ──────────────────────────────────────────────────────────────── */
 
 .loading {
   font-size: 13px;
-  color: #aaa;
+  color: var(--color-mist-gray);
   padding: 40px;
   text-align: center;
 }
