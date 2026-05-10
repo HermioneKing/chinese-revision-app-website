@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale, LinearScale,
@@ -55,6 +55,10 @@ const RANGES: { value: Range; label: string }[] = [
   { value: 'all', label: 'All time' },
 ];
 
+type ViewMode = 'table' | 'chart';
+
+interface ClassOption { class_id: number; value: string; grade: number; }
+
 type PassageSortKey = 'title' | 'attempts' | 'students' | 'avg_wrong' | 'pct_perfect' | 'avg_duration';
 
 const QUESTION_LABELS: Record<string, string> = {
@@ -84,30 +88,48 @@ function fmtHour(h: number): string {
 
 export default function LearningAnalyticsPage() {
   const { palette } = usePalette();
-  const [range, setRange]           = useState<Range>('30');
-  const [passageId, setPassageId]   = useState<string>('all');
-  const [passages, setPassages]     = useState<PassageOption[]>([]);
-  const [data, setData]             = useState<AnalyticsData | null>(null);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState<string | null>(null);
-  const [qtMetric, setQtMetric]     = useState<'avg_wrong' | 'attempts'>('avg_wrong');
-  const [sortKey, setSortKey]       = useState<PassageSortKey>('attempts');
-  const [sortOrder, setSortOrder]   = useState<'asc' | 'desc'>('desc');
+  const [range, setRange]               = useState<Range>('30');
+  const [passageId, setPassageId]       = useState<string>('all');
+  const [classId, setClassId]           = useState<string>('all');
+  const [passageView, setPassageView]   = useState<ViewMode>('table');
+  const [passages, setPassages]         = useState<PassageOption[]>([]);
+  const [classes, setClasses]           = useState<ClassOption[]>([]);
+  const [data, setData]                 = useState<AnalyticsData | null>(null);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState<string | null>(null);
+  const [qtMetric, setQtMetric]         = useState<'avg_wrong' | 'attempts'>('avg_wrong');
+  const [passageMetric, setPassageMetric] = useState<'attempts' | 'avg_wrong' | 'pct_perfect' | 'avg_duration'>('attempts');
+  const [sortKey, setSortKey]           = useState<PassageSortKey>('attempts');
+  const [sortOrder, setSortOrder]       = useState<'asc' | 'desc'>('desc');
+  const [tooltip, setTooltip]           = useState<{ text: string; top: number; left: number } | null>(null);
+  const tooltipRef                      = useRef<HTMLDivElement>(null);
 
-  // Load passage list once
+  useLayoutEffect(() => {
+    if (!tooltip || !tooltipRef.current) return;
+    const rect = tooltipRef.current.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 8) {
+      tooltipRef.current.style.left = `${tooltip.left - (rect.right - (window.innerWidth - 8))}px`;
+    }
+  }, [tooltip]);
+
+  // Load passage and class lists once
   useEffect(() => {
     apiGet('/analytics/passages')
       .then(r => r.json())
       .then(setPassages)
       .catch(() => {});
+    apiGet('/analytics/classes')
+      .then(r => r.ok ? r.json() : [])
+      .then(setClasses)
+      .catch(() => {});
   }, []);
 
   // Load analytics whenever filters change
-  const fetchAnalytics = useCallback(async (r: Range, pid: string) => {
+  const fetchAnalytics = useCallback(async (r: Range, pid: string, cid: string) => {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({ range: r, passage_id: pid });
+      const params = new URLSearchParams({ range: r, passage_id: pid, class_id: cid });
       const res = await apiGet(`/analytics?${params}`);
       if (!res.ok) throw new Error('Failed to load analytics');
       setData(await res.json());
@@ -118,7 +140,7 @@ export default function LearningAnalyticsPage() {
     }
   }, []);
 
-  useEffect(() => { fetchAnalytics(range, passageId); }, [range, passageId, fetchAnalytics]);
+  useEffect(() => { fetchAnalytics(range, passageId, classId); }, [range, passageId, classId, fetchAnalytics]);
 
   // ── Passage table sort (client-side, max 44 rows) ──────────────────────────
   const handleSort = (key: PassageSortKey) => {
@@ -197,6 +219,66 @@ export default function LearningAnalyticsPage() {
     scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
   };
 
+  // ── Passage performance chart (chart view mode) ───────────────────────────
+  const PASSAGE_METRICS: { value: typeof passageMetric; label: string }[] = [
+    { value: 'attempts',     label: 'Attempts'     },
+    { value: 'avg_wrong',    label: 'Avg wrong'    },
+    { value: 'pct_perfect',  label: '% Perfect'    },
+    { value: 'avg_duration', label: 'Avg duration' },
+  ];
+
+  const passageChartItems = (data?.passages ?? []).slice(0, 15);
+
+  const passageMetricValue = (p: PassageStat): number => {
+    if (passageMetric === 'attempts')     return p.attempts;
+    if (passageMetric === 'avg_wrong')    return p.avg_wrong    ?? 0;
+    if (passageMetric === 'pct_perfect')  return p.pct_perfect  ?? 0;
+    if (passageMetric === 'avg_duration') return p.avg_duration ?? 0;
+    return 0;
+  };
+
+  const passageChartData = {
+    labels: passageChartItems.map(p => p.title),
+    datasets: [{
+      label: PASSAGE_METRICS.find(m => m.value === passageMetric)?.label ?? '',
+      data: passageChartItems.map(passageMetricValue),
+      backgroundColor: palette.p1 + 'CC',
+      borderColor: palette.p1,
+      borderWidth: 1,
+      borderRadius: 4,
+    }],
+  };
+
+  const passageChartOptions = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx: { parsed: { x: number }; dataIndex: number }) => {
+            const p = passageChartItems[ctx.dataIndex];
+            if (passageMetric === 'avg_duration') return ` ${fmtDuration(p.avg_duration)}`;
+            if (passageMetric === 'pct_perfect')  return ` ${ctx.parsed.x}%`;
+            return ` ${ctx.parsed.x}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        ticks: {
+          precision: passageMetric === 'attempts' ? 0 : 1,
+          callback: (v: number | string) =>
+            passageMetric === 'avg_duration' ? fmtDuration(Number(v))
+            : passageMetric === 'pct_perfect' ? `${v}%`
+            : v,
+        },
+      },
+    },
+  };
+
   // ── Wrong count colouring ──────────────────────────────────────────────────
   const wrongClass = (v: number | null) => {
     if (v === null) return '';
@@ -207,6 +289,11 @@ export default function LearningAnalyticsPage() {
 
   return (
     <div className={styles.page}>
+      {tooltip && (
+        <div ref={tooltipRef} className={styles.tooltipFixed} style={{ top: tooltip.top, left: tooltip.left }}>
+          {tooltip.text}
+        </div>
+      )}
       <h1 className={styles.pageTitle}>Learning Analytics</h1>
 
       {/* Filter bar */}
@@ -236,6 +323,19 @@ export default function LearningAnalyticsPage() {
           ))}
         </select>
 
+        <select
+          className={styles.passageSelect}
+          value={classId}
+          onChange={e => setClassId(e.target.value)}
+        >
+          <option value="all">All classes</option>
+          {classes.map(c => (
+            <option key={c.class_id} value={String(c.class_id)}>
+              {`F.${c.grade} ${c.value}`}
+            </option>
+          ))}
+        </select>
+
         {data && (
           <span className={styles.filterLabel}>
             {data.passages.reduce((s, p) => s + p.attempts, 0).toLocaleString()} sessions
@@ -248,57 +348,103 @@ export default function LearningAnalyticsPage() {
 
       {!loading && !error && data && (
         <>
-          {/* Passage table */}
+          {/* Passage performance */}
           <div className={styles.panel}>
             <div className={styles.panelHeader}>
               <h2 className={styles.panelTitle}>Passage performance</h2>
-            </div>
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    {([
-                      ['title',        'Passage'],
-                      ['attempts',     'Attempts'],
-                      ['students',     'Students'],
-                      ['avg_wrong',    'Avg wrong'],
-                      ['pct_perfect',  '% Perfect'],
-                      ['avg_duration', 'Avg duration'],
-                    ] as [PassageSortKey, string][]).map(([key, label]) => (
-                      <th
-                        key={key}
-                        className={key === sortKey ? styles.activeHeader : ''}
-                        onClick={() => handleSort(key)}
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                {passageView === 'chart' && (
+                  <div className={styles.toggleGroup}>
+                    {PASSAGE_METRICS.map(m => (
+                      <button
+                        key={m.value}
+                        className={`${styles.toggleBtn} ${passageMetric === m.value ? styles.toggleBtnActive : ''}`}
+                        onClick={() => setPassageMetric(m.value)}
                       >
-                        {label} {sortIcon(key)}
-                      </th>
+                        {m.label}
+                      </button>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedPassages.map(p => (
-                    <tr key={p.passage_id}>
-                      <td>
-                        <div className={styles.passageTitle}>{p.title}</div>
-                        {p.author && <div className={styles.authorCell}>{p.author}</div>}
-                      </td>
-                      <td>{p.attempts.toLocaleString()}</td>
-                      <td>{p.students.toLocaleString()}</td>
-                      <td className={wrongClass(p.avg_wrong)}>
-                        {p.avg_wrong !== null ? p.avg_wrong : '—'}
-                      </td>
-                      <td className={p.pct_perfect !== null && p.pct_perfect >= 60 ? styles.goodNum : ''}>
-                        {p.pct_perfect !== null ? `${p.pct_perfect}%` : '—'}
-                      </td>
-                      <td>{fmtDuration(p.avg_duration)}</td>
-                    </tr>
-                  ))}
-                  {sortedPassages.length === 0 && (
-                    <tr><td colSpan={6} className={styles.loading}>No data for this filter.</td></tr>
-                  )}
-                </tbody>
-              </table>
+                  </div>
+                )}
+                <div className={styles.toggleGroup}>
+                  <button
+                    className={`${styles.toggleBtn} ${passageView === 'table' ? styles.toggleBtnActive : ''}`}
+                    onClick={() => setPassageView('table')}
+                  >
+                    Table
+                  </button>
+                  <button
+                    className={`${styles.toggleBtn} ${passageView === 'chart' ? styles.toggleBtnActive : ''}`}
+                    onClick={() => setPassageView('chart')}
+                  >
+                    Chart
+                  </button>
+                </div>
+              </div>
             </div>
+
+            {passageView === 'chart' ? (
+              passageChartItems.length === 0
+                ? <p className={styles.loading}>No data for this filter.</p>
+                : <Bar data={passageChartData} options={passageChartOptions} />
+            ) : (
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      {([
+                        ['title',        'Passage',      'Title and author of the passage'],
+                        ['attempts',     'Attempts',     'Total question sessions completed across all students'],
+                        ['students',     'Students',     'Number of unique students who attempted this passage'],
+                        ['avg_wrong',    'Avg wrong',    'Average wrong answers per question session'],
+                        ['pct_perfect',  '% Perfect',    '% of sessions where the student made no mistakes'],
+                        ['avg_duration', 'Avg duration', 'Average time spent per question session'],
+                      ] as [PassageSortKey, string, string][]).map(([key, label, tip]) => (
+                        <th
+                          key={key}
+                          className={key === sortKey ? styles.activeHeader : ''}
+                          onClick={() => handleSort(key)}
+                        >
+                          {label}
+                          <span
+                            className={styles.hint}
+                            onClick={e => e.stopPropagation()}
+                            onMouseEnter={e => {
+                              const r = e.currentTarget.getBoundingClientRect();
+                              setTooltip({ text: tip, top: r.top - 6, left: r.left + r.width / 2 });
+                            }}
+                            onMouseLeave={() => setTooltip(null)}
+                          >?</span>
+                          {sortIcon(key)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedPassages.map(p => (
+                      <tr key={p.passage_id}>
+                        <td>
+                          <div className={styles.passageTitle}>{p.title}</div>
+                          {p.author && <div className={styles.authorCell}>{p.author}</div>}
+                        </td>
+                        <td>{p.attempts.toLocaleString()}</td>
+                        <td>{p.students.toLocaleString()}</td>
+                        <td className={wrongClass(p.avg_wrong)}>
+                          {p.avg_wrong !== null ? p.avg_wrong : '—'}
+                        </td>
+                        <td className={p.pct_perfect !== null && p.pct_perfect >= 60 ? styles.goodNum : ''}>
+                          {p.pct_perfect !== null ? `${p.pct_perfect}%` : '—'}
+                        </td>
+                        <td>{fmtDuration(p.avg_duration)}</td>
+                      </tr>
+                    ))}
+                    {sortedPassages.length === 0 && (
+                      <tr><td colSpan={6} className={styles.loading}>No data for this filter.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           {/* Question type + Day of week */}
