@@ -1,10 +1,12 @@
 // API utility functions for authenticated requests
+//
+// If NEXT_PUBLIC_API_BASE_URL is unset/empty, the browser uses same-origin paths `/api/...`
+// (nginx or Next rewrites forward to the backend). Use an explicit URL only when the API
+// host differs from the page (e.g. http://127.0.0.1:5007/api during local dev).
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
-
-if (!API_BASE_URL) {
-  throw new Error('NEXT_PUBLIC_API_BASE_URL is required');
-}
+const raw = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL =
+  typeof raw === 'string' && raw.trim() !== '' ? raw.replace(/\/+$/, '') : null;
 
 // Get token from localStorage
 export const getToken = (): string | null => {
@@ -42,8 +44,12 @@ export const apiRequest = async (
   }
 
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url =
+    API_BASE_URL !== null
+      ? `${API_BASE_URL}${normalizedEndpoint}`
+      : `/api${normalizedEndpoint}`;
 
-  const response = await fetch(`${API_BASE_URL}${normalizedEndpoint}`, {
+  const response = await fetch(url, {
     ...options,
     headers,
   });

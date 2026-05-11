@@ -1,24 +1,24 @@
 
 
+# Frontend uses the image from Dockerfile.frontend (next build + next start). No bind mount:
+# bind-mount + `next dev`/Turbopack in Docker often breaks over public IPs (stale / Turbopack errors).
 services:
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
       args:
-        # Same host your browser uses; 127.0.0.1 only works when the browser runs on the Docker host.
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5007/api}
+        # Leave unset for HTTPS same-host deploy (browser → /api → nginx → backend).
+        # Set in .env e.g. http://127.0.0.1:5007/api only when the browser must call the API by host port.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-}
     ports:
       - "3007:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules # Exclude node_modules from host mount
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       # Override root .env PORT (backend); Next must listen on container port 3000 (see ports 3007:3000).
       - PORT=3000
-      # Browser calls this URL from the client machine (not from inside Docker).
-      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:5007/api}
+      # Browser: omit or leave empty → same-origin /api/... (correct behind nginx + HTTPS).
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-}
       # RSC/server fetches from inside Docker network:
       - SERVER_API_BASE_URL=http://backend:5007/api
       # Browser can use origin /api/... rewrite when NEXT_PUBLIC_API_BASE_URL is empty:
