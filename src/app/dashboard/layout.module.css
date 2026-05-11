@@ -250,3 +250,25 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+/* ── Responsive: desktop sidebar always visible ──────────────────────────── */
+
+@media (min-width: 1280px) {
+  .sidebar {
+    left: 0;
+  }
+
+  .main {
+    margin-left: 220px;
+  }
+
+  /* Toggle and overlay are irrelevant on desktop */
+  .toggleButton {
+    display: none;
+  }
+
+  .overlay,
+  .overlayVisible {
+    display: none;
+  }
+}
