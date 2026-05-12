@@ -145,11 +145,11 @@ app.get('/api/settings/profile', authenticateToken, async (req: AuthRequest, res
     const teacherId = req.teacher!.teacher_id;
     const rows = await prisma.$queryRaw<Array<{
       teacher_id: number; username: string; email: string | null;
-      title: string | null; given_name: string | null; surname: string | null;
+      firstname: string | null; surname: string | null;
       tel: string | null; school: string | null; subject: string | null;
     }>>`
       SELECT t.teacher_id, t.username, t.email,
-             p.title, p.given_name, p.surname, p.tel, p.school, p.subject
+             p.firstname::text AS firstname, p.surname, p.tel, p.school, p.subject
       FROM teacher t
       LEFT JOIN teacher_personal_info p ON p.teacher_id = t.teacher_id
       WHERE t.teacher_id = ${teacherId}
@@ -167,15 +167,14 @@ app.get('/api/settings/profile', authenticateToken, async (req: AuthRequest, res
 app.put('/api/settings/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const teacherId = req.teacher!.teacher_id;
-    const { title, given_name, surname, tel, email, school, subject } = req.body as Record<string, string>;
+    const { firstname, surname, tel, email, school, subject } = req.body as Record<string, string>;
 
     await prisma.$executeRaw`
-      INSERT INTO teacher_personal_info (teacher_id, title, given_name, surname, tel, email, school, subject)
-      VALUES (${teacherId}, ${title ?? null}, ${given_name ?? null}, ${surname ?? null},
+      INSERT INTO teacher_personal_info (teacher_id, firstname, surname, tel, email, school, subject)
+      VALUES (${teacherId}, ${firstname ?? null}::"char", ${surname ?? null},
               ${tel ?? null}, ${email ?? null}, ${school ?? null}, ${subject ?? null})
       ON CONFLICT (teacher_id) DO UPDATE SET
-        title      = EXCLUDED.title,
-        given_name = EXCLUDED.given_name,
+        firstname  = EXCLUDED.firstname,
         surname    = EXCLUDED.surname,
         tel        = EXCLUDED.tel,
         email      = EXCLUDED.email,

@@ -10,8 +10,7 @@ interface Profile {
   teacher_id: number;
   username: string;
   email: string | null;
-  title: string | null;
-  given_name: string | null;
+  firstname: string | null;
   surname: string | null;
   tel: string | null;
   school: string | null;
@@ -20,10 +19,8 @@ interface Profile {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const TITLES = ['', 'Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
-
 function displayName(p: Profile): string {
-  const parts = [p.title, p.given_name, p.surname].filter(Boolean);
+  const parts = [p.firstname, p.surname].filter(Boolean);
   return parts.length > 0 ? parts.join(' ') : p.username;
 }
 
@@ -35,8 +32,9 @@ export default function SettingsPage() {
 
   useEffect(() => {
     apiGet('/settings/profile')
-      .then(r => r.json())
-      .then(setProfile)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.username ? setProfile(d) : null)
+      .catch(() => null)
       .finally(() => setPageLoading(false));
   }, []);
 
@@ -57,13 +55,12 @@ export default function SettingsPage() {
 
 function ProfileCard({ profile, onSave }: { profile: Profile; onSave: (p: Profile) => void }) {
   const [form, setForm] = useState({
-    title:      profile.title      ?? '',
-    given_name: profile.given_name ?? '',
-    surname:    profile.surname    ?? '',
-    email:      profile.email      ?? '',
-    tel:        profile.tel        ?? '',
-    school:     profile.school     ?? '',
-    subject:    profile.subject    ?? '',
+    firstname: profile.firstname ?? '',
+    surname:   profile.surname   ?? '',
+    email:     profile.email     ?? '',
+    tel:       profile.tel       ?? '',
+    school:    profile.school    ?? '',
+    subject:   profile.subject   ?? '',
   });
   const [saving,  setSaving]  = useState(false);
   const [success, setSuccess] = useState(false);
@@ -85,7 +82,7 @@ function ProfileCard({ profile, onSave }: { profile: Profile; onSave: (p: Profil
         const d = await res.json();
         throw new Error(d.error ?? 'Failed to save');
       }
-      onSave({ ...profile, ...form, email: form.email || null });
+      onSave({ ...profile, ...form, firstname: form.firstname || null, email: form.email || null });
       setSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
@@ -94,8 +91,8 @@ function ProfileCard({ profile, onSave }: { profile: Profile; onSave: (p: Profil
     }
   };
 
-  const avatarChar = (form.given_name || form.surname || profile.username)[0].toUpperCase();
-  const name = [form.title, form.given_name, form.surname].filter(Boolean).join(' ') || profile.username;
+  const avatarChar = (form.firstname || form.surname || profile.username || '?')[0].toUpperCase();
+  const name = [form.firstname, form.surname].filter(Boolean).join(' ') || profile.username;
 
   return (
     <div className={styles.card}>
@@ -111,15 +108,8 @@ function ProfileCard({ profile, onSave }: { profile: Profile; onSave: (p: Profil
 
       <div className={styles.formGrid}>
         <div className={styles.fieldGroup}>
-          <label className={styles.label}>Title</label>
-          <select className={styles.select} value={form.title} onChange={set('title')}>
-            {TITLES.map(t => <option key={t} value={t}>{t || '—'}</option>)}
-          </select>
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Given name</label>
-          <input className={styles.input} value={form.given_name} onChange={set('given_name')} placeholder="e.g. Alex" />
+          <label className={styles.label}>First name</label>
+          <input className={styles.input} value={form.firstname} onChange={set('firstname')} placeholder="e.g. Alex" />
         </div>
 
         <div className={styles.fieldGroup}>
@@ -235,11 +225,21 @@ function PasswordCard() {
 // ── About card ────────────────────────────────────────────────────────────────
 
 function AboutCard({ profile }: { profile: Profile }) {
+  const [schoolName, setSchoolName] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiGet(`/settings/school/${profile.teacher_id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.school_name ? setSchoolName(d.school_name) : null)
+      .catch(() => null);
+  }, [profile.teacher_id]);
+
   const rows: { label: string; value: string }[] = [
-    { label: 'Teacher ID',   value: `#${profile.teacher_id}` },
-    { label: 'Username',     value: profile.username },
-    { label: 'Display name', value: displayName(profile) },
-    { label: 'Platform',     value: 'DSE Chinese Revision' },
+    { label: 'Teacher ID',        value: `#${profile.teacher_id}` },
+    { label: 'Username',          value: profile.username },
+    { label: 'Display name',      value: displayName(profile) },
+    { label: 'Registered school', value: schoolName ?? '—' },
+    { label: 'Platform',          value: 'DSE Chinese Revision' },
   ];
 
   return (

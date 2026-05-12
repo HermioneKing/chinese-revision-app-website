@@ -117,6 +117,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             })}
           </ul>
         </nav>
+        <div className={styles.sidebarBottom}>
+          <hr className={styles.sidebarDivider} />
+          <Link
+            href="/dashboard/settings"
+            onClick={handleSidebarLinkClick}
+            className={pathname.startsWith('/dashboard/settings') ? styles.navLinkActive : styles.navLink}
+          >
+            Settings
+          </Link>
+        </div>
       </aside>
       <div className={`${styles.overlay} ${isSidebarVisible ? styles.overlayVisible : ''}`} onClick={toggleSidebar}></div>
 

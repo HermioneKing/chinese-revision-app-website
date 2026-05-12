@@ -40,6 +40,19 @@
   letter-spacing: -0.02em;
 }
 
+.sidebarBottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebarDivider {
+  border: none;
+  border-top: 2px solid rgba(255, 255, 255, 0.10);
+  margin: 0 8px 8px;
+}
+
 .sidebar nav ul {
   list-style: none;
   padding: 0;
