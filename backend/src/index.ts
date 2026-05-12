@@ -75,7 +75,13 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Wrong username and/or password.' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, teacher.password_hash);
+    let isPasswordValid = false;
+    try {
+      isPasswordValid = await bcrypt.compare(password, teacher.password_hash);
+    } catch {
+      // Malformed / non-bcrypt hash in DB — treat as invalid login, not 500
+      return res.status(401).json({ error: 'Wrong username and/or password.' });
+    }
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Wrong username and/or password.' });
@@ -102,11 +108,19 @@ app.post('/api/auth/login', async (req, res) => {
       username: req.body?.username ?? null,
       errorName: error instanceof Error ? error.name : 'UnknownError',
       errorMessage: error instanceof Error ? error.message : String(error),
+      prismaCode:
+        error instanceof Prisma.PrismaClientKnownRequestError ? error.code : undefined,
     });
 
+    if (error instanceof Prisma.PrismaClientInitializationError) {
+      return res.status(503).json({ error: 'Authentication service is temporarily unavailable.' });
+    }
+
+    // P1000 = DB auth failed; P1001 = can't reach server; P1017 = connection closed;
+    // P2021 = table does not exist — all are infra/schema issues, not bad user credentials
     if (
-      error instanceof Prisma.PrismaClientInitializationError ||
-      (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021')
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      ['P1000', 'P1001', 'P1017', 'P2021'].includes(error.code)
     ) {
       return res.status(503).json({ error: 'Authentication service is temporarily unavailable.' });
     }
