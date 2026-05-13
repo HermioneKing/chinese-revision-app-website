@@ -250,12 +250,11 @@ model Grading {
 }
 
 model Teacher {
-  teacher_id   Int     @id @default(autoincrement())
-  username     String  @unique @db.VarChar(255)
-  password_hash String @db.VarChar(255)
-  group_id     Int
-  email        String? @db.VarChar(255)
-  school_id    Int
+  teacher_id    Int     @id @default(autoincrement())
+  username      String  @unique @db.VarChar(255)
+  password_hash String  @db.VarChar(255)
+  email         String? @db.VarChar(255)
+  school_id     Int
 
   @@map("teacher")
 }
