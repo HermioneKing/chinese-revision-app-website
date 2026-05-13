@@ -192,7 +192,7 @@ export default function StudentsPage() {
               </thead>
               <tbody>
                 {list.map((s, i) => (
-                  <tr key={s.student_id} onClick={() => router.push(`/dashboard/students/${s.student_id}`)}>
+                  <tr key={s.student_id} onClick={() => router.push(`/students/${s.student_id}`)}>
                     <td className={styles.noCell}>{rankBase + i + 1}</td>
                     <td className={styles.usernameCell}>
                       {s.nickname ? `${s.nickname} (${s.username})` : s.username}
@@ -263,7 +263,7 @@ export default function StudentsPage() {
             </thead>
             <tbody>
               {data.students.map(s => (
-                <tr key={s.student_id} onClick={() => router.push(`/dashboard/students/${s.student_id}`)}>
+                <tr key={s.student_id} onClick={() => router.push(`/students/${s.student_id}`)}>
                   <td className={styles.usernameCell}>{s.username}</td>
                   <td className={styles.nicknameCell}>{s.nickname ?? '—'}</td>
                   <td>

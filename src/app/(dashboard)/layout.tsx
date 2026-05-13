@@ -77,10 +77,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isAlertsMenuVisible, isAccountMenuVisible]);
 
   const navItems = [
-    { name: 'Home', path: '/dashboard' },
-    { name: 'Students', path: '/dashboard/students' },
-    { name: 'Learning Analytics', path: '/dashboard/learning-analytics' },
-    { name: 'Reports', path: '/dashboard/reports' },
+    { name: 'Home', path: '/home' },
+    { name: 'Students', path: '/students' },
+    { name: 'Learning Analytics', path: '/learning-analytics' },
+    { name: 'Reports', path: '/reports' },
   ];
 
   const dummyAlerts = [
@@ -93,15 +93,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <div className={styles.layout}>
       <aside className={`${styles.sidebar} ${isSidebarVisible ? styles.sidebarVisible : ''}`}>
         <div className={styles.sidebarLogo}>
-          <Link href="/dashboard" onClick={handleSidebarLinkClick} className={styles.sidebarLogoLink}>
+          <Link href="/home" onClick={handleSidebarLinkClick} className={styles.sidebarLogoLink}>
             DSE Chinese
           </Link>
         </div>
         <nav>
           <ul>
             {navItems.map((item) => {
-              const isActive = item.path === '/dashboard'
-                ? pathname === '/dashboard'
+              const isActive = item.path === '/home'
+                ? pathname === '/home'
                 : pathname.startsWith(item.path);
               return (
                 <li key={item.path}>
@@ -120,9 +120,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <div className={styles.sidebarBottom}>
           <hr className={styles.sidebarDivider} />
           <Link
-            href="/dashboard/settings"
+            href="/settings"
             onClick={handleSidebarLinkClick}
-            className={pathname.startsWith('/dashboard/settings') ? styles.navLinkActive : styles.navLink}
+            className={pathname.startsWith('/settings') ? styles.navLinkActive : styles.navLink}
           >
             Settings
           </Link>
@@ -136,7 +136,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <button onClick={toggleSidebar} className={styles.toggleButton}>
               ☰
             </button>
-            <Link href="/dashboard" className={styles.appNameLink}>
+            <Link href="/home" className={styles.appNameLink}>
               <span className={styles.appName}>DSE Chinese Revision</span>
             </Link>
           </div>
@@ -166,7 +166,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               <div className={styles.accountIcon}></div>
               {isAccountMenuVisible && (
                 <div className={styles.accountMenu}>
-                  <Link href="/dashboard/settings">Setting</Link>
+                  <Link href="/settings">Setting</Link>
                   <a href="#" onClick={handleLogout} style={{ cursor: 'pointer' }}>Sign out</a>
                 </div>
               )}

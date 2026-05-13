@@ -286,7 +286,7 @@ export default function StudentDetailPage() {
 
   return (
     <div className={styles.page}>
-      <button className={styles.backBtn} onClick={() => router.push('/dashboard/students')}>
+      <button className={styles.backBtn} onClick={() => router.push('/students')}>
         ← Back to students
       </button>
 
