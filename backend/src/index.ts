@@ -63,9 +63,10 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const teacher = await prisma.teacher.findFirst({
-      where: { username: username },
-    });
+    const rows = await prisma.$queryRaw<Array<{ teacher_id: number; username: string; password_hash: string; email: string | null; school_id: number }>>`
+      SELECT teacher_id, username, password_hash, email, school_id FROM teacher WHERE username = ${username} LIMIT 1
+    `;
+    const teacher = rows[0] ?? null;
 
     if (!teacher) {
       return res.status(401).json({ error: 'Wrong username and/or password.' });
@@ -132,15 +133,10 @@ app.post('/api/auth/login', async (req, res) => {
 // Example protected route (you can add more protected routes as needed)
 app.get('/api/auth/me', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const teacher = await prisma.teacher.findUnique({
-      where: { teacher_id: req.teacher?.teacher_id },
-      select: {
-        teacher_id: true,
-        username: true,
-        email: true,
-        school_id: true,
-      },
-    });
+    const rows = await prisma.$queryRaw<Array<{ teacher_id: number; username: string; email: string | null; school_id: number }>>`
+      SELECT teacher_id, username, email, school_id FROM teacher WHERE teacher_id = ${req.teacher?.teacher_id} LIMIT 1
+    `;
+    const teacher = rows[0] ?? null;
 
     if (!teacher) {
       return res.status(404).json({ error: 'Teacher not found' });
@@ -213,7 +209,10 @@ app.put('/api/settings/password', authenticateToken, async (req: AuthRequest, re
     if (new_password.length < 8)
       return res.status(400).json({ error: 'New password must be at least 8 characters' });
 
-    const teacher = await prisma.teacher.findUnique({ where: { teacher_id: teacherId } });
+    const pwRows = await prisma.$queryRaw<Array<{ password_hash: string }>>`
+      SELECT password_hash FROM teacher WHERE teacher_id = ${teacherId} LIMIT 1
+    `;
+    const teacher = pwRows[0] ?? null;
     if (!teacher?.password_hash)
       return res.status(404).json({ error: 'Teacher not found' });
 
@@ -241,9 +240,10 @@ app.get('/api/settings/school/:teacherId', authenticateToken, async (req: AuthRe
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { teacher_id: teacherId },
-    });
+    const tRows = await prisma.$queryRaw<Array<{ teacher_id: number; username: string; email: string | null; school_id: number }>>`
+      SELECT teacher_id, username, email, school_id FROM teacher WHERE teacher_id = ${teacherId} LIMIT 1
+    `;
+    const teacher = tRows[0] ?? null;
 
     if (!teacher) {
       return res.status(404).json({ error: 'Teacher not found' });
@@ -251,8 +251,8 @@ app.get('/api/settings/school/:teacherId', authenticateToken, async (req: AuthRe
 
     // Get school name using raw query since we need to join with school table
     const schoolResult = await prisma.$queryRaw<Array<{ school: string }>>`
-      SELECT school 
-      FROM school 
+      SELECT school
+      FROM school
       WHERE school_id = ${teacher.school_id}
       LIMIT 1
     `;
