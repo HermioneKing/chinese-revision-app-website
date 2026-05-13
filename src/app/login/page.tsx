@@ -23,7 +23,7 @@ const LoginPage = () => {
         const data = await response.json();
         if (data.token) {
           setToken(data.token);
-          router.push('/dashboard');
+          router.push('/home');
         } else {
           setError('Login failed: No token received');
         }
